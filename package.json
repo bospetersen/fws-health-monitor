@@ -4,7 +4,7 @@
   "description": "Independent health monitoring service for FWS system",
   "private": true,
   "scripts": {
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev",
     "build": "turbo run build",
     "start": "turbo run start",
     "lint": "turbo run lint",
@@ -19,11 +19,12 @@
   ],
   "author": "",
   "license": "UNLICENSED",
+  "packageManager": "pnpm@9.0.0",
   "devDependencies": {
     "turbo": "^2.0.0"
   },
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "npm": ">=10.0.0"
   }
 }

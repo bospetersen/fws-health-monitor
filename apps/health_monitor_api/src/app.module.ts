@@ -10,7 +10,7 @@ import { IntervalsModule } from './intervals/intervals.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env.local', '.env'],
     }),
     DatabaseModule,
     HealthCheckModule,

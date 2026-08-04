@@ -50,7 +50,7 @@ export class HealthCheckService {
             completed = true;
             clearTimeout(timeoutHandle);
             const responseTime = Date.now() - startTime;
-            const online = res.statusCode && res.statusCode >= 200 && res.statusCode < 400;
+            const online = (res.statusCode != null) && res.statusCode >= 200 && res.statusCode < 400;
             resolve({ online, responseTime, statusCode: res.statusCode });
           }
           res.destroy();
@@ -65,7 +65,7 @@ export class HealthCheckService {
               online: false,
               responseTime,
               statusCode: 0,
-              errorMessage: error.message,
+              errorMessage: error instanceof Error ? error.message : String(error),
             });
           }
         });
@@ -79,7 +79,7 @@ export class HealthCheckService {
             online: false,
             responseTime: Date.now() - startTime,
             statusCode: 0,
-            errorMessage: error.message,
+            errorMessage: error instanceof Error ? error.message : String(error),
           });
         }
       }
@@ -124,7 +124,7 @@ export class HealthCheckService {
 
         this.logger.debug(`${endpoint.name}: ${status} (${responseTime}ms)`);
       } catch (error) {
-        this.logger.error(`Error checking ${endpoint.name}: ${error.message}`);
+        this.logger.error(`Error checking ${endpoint.name}: ${error instanceof Error ? error.message : String(error)}`);
         results.push({
           id: endpoint._id.toString(),
           name: endpoint.name,
@@ -132,7 +132,7 @@ export class HealthCheckService {
           status: 'offline',
           responseTime: 0,
           statusCode: 0,
-          errorMessage: error.message,
+          errorMessage: error instanceof Error ? error.message : String(error),
           checkedAt: new Date(),
         });
       }
@@ -142,7 +142,7 @@ export class HealthCheckService {
   }
 
   async getRecentChecks(limit: number = 100): Promise<HealthCheckResult[]> {
-    return this.resultModel.find().sort({ checkedAt: -1 }).limit(limit).lean();
+    return this.resultModel.find().sort({ checkedAt: -1 }).limit(limit).lean() as unknown as HealthCheckResult[];
   }
 
   async getChecksByEndpoint(endpointId: string, limit: number = 50): Promise<HealthCheckResult[]> {
@@ -150,7 +150,7 @@ export class HealthCheckService {
       .find({ endpointId })
       .sort({ checkedAt: -1 })
       .limit(limit)
-      .lean();
+      .lean() as unknown as HealthCheckResult[];
   }
 
   async getEndpointStats(endpointId: string) {

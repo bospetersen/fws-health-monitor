@@ -1,5 +1,5 @@
 {
-  "name": "health-monitor",
+  "name": "health_monitor_api",
   "version": "1.0.0",
   "description": "Health monitoring service for FWS system",
   "author": "",
@@ -25,7 +25,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
-    "@nestjs/schedule": "^4.1.1",
+    "@nestjs/schedule": "^5.0.0",
     "@nestjs/swagger": "^11.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
