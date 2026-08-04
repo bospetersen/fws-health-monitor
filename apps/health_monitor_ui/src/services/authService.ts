@@ -17,7 +17,12 @@ interface AuthContextType {
 let jwtToken: string | null = null;
 let currentUser: User | null = null;
 
-// Initialize from storage
+// Create SHARED signals once, not per useAuth() call
+const [isAuth, setIsAuth] = createSignal(false);
+const [user, setUserState] = createSignal<User | null>(null);
+const [token, setTokenState] = createSignal<string | null>(null);
+
+// Initialize from storage once on module load
 function initializeAuth() {
   const stored = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
   if (stored) {
@@ -26,6 +31,9 @@ function initializeAuth() {
     if (userStored) {
       currentUser = JSON.parse(userStored);
     }
+    setIsAuth(true);
+    setUserState(currentUser);
+    setTokenState(jwtToken);
   }
 }
 
@@ -33,12 +41,14 @@ function setJwtToken(token: string) {
   jwtToken = token;
   localStorage.setItem('jwtToken', token);
   sessionStorage.setItem('jwtToken', token);
+  setTokenState(token);
 }
 
 function setUser(user: User) {
   currentUser = user;
   localStorage.setItem('user', JSON.stringify(user));
   sessionStorage.setItem('user', JSON.stringify(user));
+  setUserState(user);
 }
 
 function clearAuth() {
@@ -48,15 +58,15 @@ function clearAuth() {
   localStorage.removeItem('user');
   sessionStorage.removeItem('jwtToken');
   sessionStorage.removeItem('user');
+  setIsAuth(false);
+  setUserState(null);
+  setTokenState(null);
 }
 
+// Initialize on load
+initializeAuth();
+
 export function useAuth() {
-  const [isAuth, setIsAuth] = createSignal(!!jwtToken);
-  const [user, setUserState] = createSignal<User | null>(currentUser);
-  const [token, setTokenState] = createSignal<string | null>(jwtToken);
-
-  initializeAuth();
-
   const login = async (email: string, password: string) => {
     try {
       const response = await fetch('http://localhost:3400/api/auth/login', {
@@ -74,8 +84,6 @@ export function useAuth() {
       setJwtToken(result.access_token);
       setUser(result.user);
       setIsAuth(true);
-      setUserState(result.user);
-      setTokenState(result.access_token);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -84,9 +92,6 @@ export function useAuth() {
 
   const logout = () => {
     clearAuth();
-    setIsAuth(false);
-    setUserState(null);
-    setTokenState(null);
   };
 
   return {

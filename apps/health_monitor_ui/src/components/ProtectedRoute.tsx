@@ -1,11 +1,17 @@
-import { JSX, Accessor } from 'solid-js';
+import { JSX } from 'solid-js';
+import { Show } from 'solid-js';
 import { Navigate } from '@solidjs/router';
-import { isAuthenticated } from '../services/authService';
+import { useAuth } from '../services/authService';
 
 interface ProtectedRouteProps {
   component: () => JSX.Element;
 }
 
 export default function ProtectedRoute(props: ProtectedRouteProps) {
-  return isAuthenticated() ? props.component() : <Navigate href="/login" />;
+  const auth = useAuth();
+  return (
+    <Show when={auth.isAuthenticated()} fallback={<Navigate href="/login" />}>
+      {props.component()}
+    </Show>
+  );
 }

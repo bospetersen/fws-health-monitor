@@ -166,9 +166,17 @@ export default function HealthStatusPage() {
   };
 
   const handleLogout = () => {
-    auth.logout();
-    navigate('/login');
+    // Clear auth state directly
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('jwtToken');
+    sessionStorage.removeItem('user');
+    console.log('Logout: storage cleared, redirecting...');
+    // Redirect immediately
+    window.location.href = '/login';
   };
+
+  let logoutButtonRef: HTMLButtonElement | undefined;
 
   const loginLinks = systemLinks.filter((link) => link.type === 'Login');
   const swaggerLinks = systemLinks.filter((link) => link.type === 'Swagger');
@@ -184,23 +192,53 @@ export default function HealthStatusPage() {
           <span style={{ "font-size": "14px", "color": "#666" }}>
             {auth.user()?.email}
           </span>
-          <button
-            onclick={handleLogout}
-            style={{
-              "padding": "8px 16px",
-              "background-color": "#f44336",
-              "color": "white",
-              "border": "none",
-              "border-radius": "4px",
-              "font-size": "14px",
-              "cursor": "pointer",
-              "transition": "background-color 0.2s",
+          <form onsubmit={(e) => {
+            e.preventDefault();
+            window.location.href = '/system/manage-endpoints';
+          }} style={{ "display": "inline" }}>
+            <button
+              type="submit"
+              style={{
+                "padding": "8px 16px",
+                "background-color": "#2196F3",
+                "color": "white",
+                "border": "none",
+                "border-radius": "4px",
+                "font-size": "14px",
+                "cursor": "pointer",
+                "transition": "background-color 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#1976D2")}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#2196F3")}
+            >
+              Manage Endpoints
+            </button>
+          </form>
+          <form
+            onsubmit={(e) => {
+              e.preventDefault();
+              handleLogout();
             }}
-            onmouseover={(e) => (e.currentTarget.style.backgroundColor = "#d32f2f")}
-            onmouseout={(e) => (e.currentTarget.style.backgroundColor = "#f44336")}
+            style={{ "display": "inline" }}
           >
-            Logout
-          </button>
+            <button
+              type="submit"
+              style={{
+                "padding": "8px 16px",
+                "background-color": "#f44336",
+                "color": "white",
+                "border": "none",
+                "border-radius": "4px",
+                "font-size": "14px",
+                "cursor": "pointer",
+                "transition": "background-color 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#d32f2f")}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f44336")}
+            >
+              Logout
+            </button>
+          </form>
         </div>
       </header>
 
@@ -210,7 +248,7 @@ export default function HealthStatusPage() {
           <div class={styles.healthCheckHeader}>
             <h2>🔍 System Status</h2>
             <button
-              onclick={checkEndpointHealth}
+              onClick={checkEndpointHealth}
               disabled={isLoading()}
               class={styles.refreshButton}
               title="Refresh endpoint status (auto-checks every 5 minutes)"

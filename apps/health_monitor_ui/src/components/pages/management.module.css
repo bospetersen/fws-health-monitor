@@ -1,0 +1,96 @@
+.contentArea {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.errorBox {
+  padding: 12px 16px;
+  background-color: #ffebee;
+  border: 1px solid #ef5350;
+  border-radius: 4px;
+  color: #c62828;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.errorBox button {
+  padding: 4px 8px;
+  background-color: #c62828;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.formSection {
+  background-color: #f9f9f9;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid #e0e0e0;
+}
+
+.formSection h2 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+}
+
+.groupsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.groupCard {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.groupCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.groupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.groupHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.endpointsSubList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.endpointItem {
+  background-color: #f9f9f9;
+  padding: 12px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 3px solid #2196F3;
+}
+
+.endpointItem strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #333;
+}

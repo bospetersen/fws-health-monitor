@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import * as http from 'http';
 import * as https from 'https';
 import { Endpoint } from './schemas/endpoint.schema';
+import { EndpointGroup } from './schemas/endpoint-group.schema';
 import { HealthCheckResult } from './schemas/health-check-result.schema';
 
 export interface EndpointStatus {
@@ -23,6 +24,7 @@ export class HealthCheckService {
 
   constructor(
     @InjectModel(Endpoint.name) private endpointModel: Model<Endpoint>,
+    @InjectModel(EndpointGroup.name) private endpointGroupModel: Model<EndpointGroup>,
     @InjectModel(HealthCheckResult.name) private resultModel: Model<HealthCheckResult>,
   ) {}
 
@@ -87,8 +89,17 @@ export class HealthCheckService {
   }
 
   async checkAllEndpoints(): Promise<EndpointStatus[]> {
-    const endpoints = await this.endpointModel.find({ active: true });
-    this.logger.log(`Checking ${endpoints.length} endpoints...`);
+    // Get all active groups
+    const activeGroups = await this.endpointGroupModel.find({ active: true });
+    const activeGroupIds = activeGroups.map((g) => g._id.toString());
+
+    // Get all active endpoints that belong to active groups
+    const endpoints = await this.endpointModel.find({
+      active: true,
+      groupId: { $in: activeGroupIds },
+    }).sort({ sortOrder: 1 });
+
+    this.logger.log(`Checking ${endpoints.length} endpoints from active groups...`);
 
     const results: EndpointStatus[] = [];
 

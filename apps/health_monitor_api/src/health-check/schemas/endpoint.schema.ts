@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Endpoint extends Document {
@@ -17,6 +17,12 @@ export class Endpoint extends Document {
 
   @Prop({ default: '' })
   description: string;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'EndpointGroup' })
+  groupId: string;
+
+  @Prop({ default: 0 })
+  sortOrder: number;
 
   @Prop({ default: Date.now })
   createdAt: Date;

@@ -1,4 +1,4 @@
-import { IsString, IsUrl, IsOptional, IsBoolean } from 'class-validator';
+import { IsString, IsUrl, IsOptional, IsBoolean, IsNumber } from 'class-validator';
 
 export class CreateEndpointDto {
   @IsString()
@@ -18,4 +18,12 @@ export class CreateEndpointDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  groupId?: string;
+
+  @IsOptional()
+  @IsNumber()
+  sortOrder?: number;
 }
