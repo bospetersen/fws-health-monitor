@@ -15,7 +15,7 @@ print(f'\n-- git commit -m"Updated files: {today}" -----------------------------
 subprocess.run(['git', 'commit', '-m', f'Updated files: {today}'], cwd=script_dir)
 
 print('\n-- git push origin dev -------------------------------------------------------------------\n')
-subprocess.run(['git', 'push', 'origin', 'dev'], cwd=script_dir)
+subprocess.run(['git', 'push', 'origin', 'main'], cwd=script_dir)
 
 print('\n------------------------------------------------------------------------------------------\n')
 
