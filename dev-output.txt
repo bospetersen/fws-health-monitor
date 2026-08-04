@@ -1,0 +1,243 @@
+
+> fws-health-monitor@1.0.0 dev /home/bosp/Dokumenter/Projects/fws-health-monitor
+> turbo run dev
+
+• turbo 2.10.8
+
+   • Packages in scope: health_monitor_api, health_monitor_ui
+   • Running dev in 2 packages
+   • Remote caching disabled
+
+health_monitor_ui:dev: cache bypass, force executing 40d2e824eecd9044
+health_monitor_api:dev: cache bypass, force executing 76f5c2973e28027e
+health_monitor_api:dev: 
+health_monitor_api:dev: > health_monitor_api@1.0.0 dev /home/bosp/Dokumenter/Projects/fws-health-monitor/apps/health_monitor_api
+health_monitor_api:dev: > nest start --watch
+health_monitor_api:dev: 
+health_monitor_ui:dev: 
+health_monitor_ui:dev: > health_monitor_ui@1.0.0 dev /home/bosp/Dokumenter/Projects/fws-health-monitor/apps/health_monitor_ui
+health_monitor_ui:dev: > vite
+health_monitor_ui:dev: 
+health_monitor_ui:dev: 
+health_monitor_ui:dev:   VITE v5.4.21  ready in 220 ms
+health_monitor_ui:dev: 
+health_monitor_ui:dev:   ➜  Local:   http://localhost:3401/
+health_monitor_ui:dev:   ➜  Network: use --host to expose
+health_monitor_api:dev: [2J[3J[H[[90m20.24.52[0m] Starting compilation in watch mode...
+health_monitor_api:dev: 
+health_monitor_api:dev: [[90m20.24.53[0m] Found 0 errors. Watching for file changes.
+health_monitor_api:dev: 
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.54 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.54 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +8ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.54 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.54 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.54 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.54 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.54 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.54 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseCoreModule dependencies initialized[39m[38;5;3m +2995ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mIntervalsModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHealthCheckModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +19ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, GET} route[39m[38;5;3m +2ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/status, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api/auth}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/login, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/verify, POST} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mHealthCheckController {/api/health-check}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/manual, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/recent, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/endpoints/:endpointId, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/endpoints/:endpointId/stats, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mEndpointsController {/api/endpoints}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints, POST} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, PUT} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, DELETE} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mIntervalsController {/api/intervals}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.57 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals/history, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.58 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mInitializing health check scheduler with interval: 300000ms[39m
+health_monitor_api:dev: [95m[Nest] 1248698  - [39m04.08.2026, 20.24.58 [95m  DEBUG[39m [38;5;3m[HealthCheckScheduler] [39m[95mRunning scheduled health check...[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.58 [32m    LOG[39m [38;5;3m[HealthCheckService] [39m[32mChecking 0 endpoints...[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.58 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check completed: 0/0 endpoints online[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.58 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check scheduler started (interval: 300000ms)[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.24.58 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +3ms[39m
+health_monitor_api:dev: ✅ Health Monitor Service running on http://0.0.0.0:3400
+health_monitor_api:dev: 📚 API Documentation: http://localhost:3400/api
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.26.20 [32m    LOG[39m [38;5;3m[AuthService] [39m[32mUser logged in: admin@colorworks.local[39m
+health_monitor_ui:dev: 20.28.21 [vite] page reload src/services/authService.ts
+health_monitor_ui:dev: 20.28.39 [vite] page reload src/components/pages/HealthStatusPage.tsx
+health_monitor_ui:dev: 20.28.51 [vite] page reload src/components/pages/HealthStatusPage.tsx
+health_monitor_ui:dev: 20.28.51 [vite] page reload src/services/authService.ts
+health_monitor_api:dev: [95m[Nest] 1248698  - [39m04.08.2026, 20.29.58 [95m  DEBUG[39m [38;5;3m[HealthCheckScheduler] [39m[95mRunning scheduled health check...[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.29.58 [32m    LOG[39m [38;5;3m[HealthCheckService] [39m[32mChecking 0 endpoints...[39m
+health_monitor_api:dev: [32m[Nest] 1248698  - [39m04.08.2026, 20.29.58 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check completed: 0/0 endpoints online[39m
+health_monitor_ui:dev: 20.31.33 [vite] page reload src/services/authService.ts
+health_monitor_ui:dev: 20.31.38 [vite] page reload src/components/pages/HealthStatusPage.tsx
+health_monitor_ui:dev: 20.31.57 [vite] page reload src/components/pages/HealthStatusPage.tsx
+health_monitor_ui:dev: 20.31.57 [vite] page reload src/services/authService.ts
+health_monitor_api:dev: [2J[3J[H[[90m20.31.59[0m] File change detected. Starting incremental compilation...
+health_monitor_api:dev: 
+health_monitor_api:dev: [[90m20.31.59[0m] Found 0 errors. Watching for file changes.
+health_monitor_api:dev: 
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.00 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +8ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.00 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseCoreModule dependencies initialized[39m[38;5;3m +2160ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mIntervalsModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHealthCheckModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +17ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, GET} route[39m[38;5;3m +2ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/status, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api/auth}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/login, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/verify, POST} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mHealthCheckController {/api/health-check}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/manual, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/recent, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/endpoints/:endpointId, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/endpoints/:endpointId/stats, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mEndpointsController {/api/endpoints}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints, GET} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, PUT} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, DELETE} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mIntervalsController {/api/intervals}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.02 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals/history, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.03 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mInitializing health check scheduler with interval: 300000ms[39m
+health_monitor_api:dev: [95m[Nest] 1254397  - [39m04.08.2026, 20.32.03 [95m  DEBUG[39m [38;5;3m[HealthCheckScheduler] [39m[95mRunning scheduled health check...[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.03 [32m    LOG[39m [38;5;3m[HealthCheckService] [39m[32mChecking 0 endpoints...[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.03 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check completed: 0/0 endpoints online[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.03 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check scheduler started (interval: 300000ms)[39m
+health_monitor_api:dev: [32m[Nest] 1254397  - [39m04.08.2026, 20.32.03 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +3ms[39m
+health_monitor_api:dev: ✅ Health Monitor Service running on http://0.0.0.0:3400
+health_monitor_api:dev: 📚 API Documentation: http://localhost:3400/api
+health_monitor_api:dev: [2J[3J[H[[90m20.32.40[0m] File change detected. Starting incremental compilation...
+health_monitor_api:dev: 
+health_monitor_api:dev: [[90m20.32.40[0m] Found 0 errors. Watching for file changes.
+health_monitor_api:dev: 
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.41 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.41 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +8ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.41 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.41 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.41 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.41 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.41 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.41 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseCoreModule dependencies initialized[39m[38;5;3m +1911ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mIntervalsModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHealthCheckModule dependencies initialized[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +18ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, GET} route[39m[38;5;3m +2ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/status, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api/auth}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/login, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/verify, POST} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mHealthCheckController {/api/health-check}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/manual, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/recent, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/endpoints/:endpointId, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/endpoints/:endpointId/stats, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mEndpointsController {/api/endpoints}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints, GET} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, PUT} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, DELETE} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mIntervalsController {/api/intervals}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals/history, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mInitializing health check scheduler with interval: 300000ms[39m
+health_monitor_api:dev: [95m[Nest] 1255279  - [39m04.08.2026, 20.32.43 [95m  DEBUG[39m [38;5;3m[HealthCheckScheduler] [39m[95mRunning scheduled health check...[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.44 [32m    LOG[39m [38;5;3m[HealthCheckService] [39m[32mChecking 0 endpoints...[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.44 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check completed: 0/0 endpoints online[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.44 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check scheduler started (interval: 300000ms)[39m
+health_monitor_api:dev: [32m[Nest] 1255279  - [39m04.08.2026, 20.32.44 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +3ms[39m
+health_monitor_api:dev: ✅ Health Monitor Service running on http://0.0.0.0:3400
+health_monitor_api:dev: 📚 API Documentation: http://localhost:3400/api
+health_monitor_api:dev: [2J[3J[H[[90m20.32.45[0m] File change detected. Starting incremental compilation...
+health_monitor_api:dev: 
+health_monitor_api:dev: [[90m20.32.45[0m] Found 0 errors. Watching for file changes.
+health_monitor_api:dev: 
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.46 [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.46 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +8ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.46 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.46 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.46 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.46 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.46 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.46 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseCoreModule dependencies initialized[39m[38;5;3m +1874ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMongooseModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mIntervalsModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHealthCheckModule dependencies initialized[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +16ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, GET} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/status, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api/auth}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/login, POST} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/verify, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mHealthCheckController {/api/health-check}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/manual, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/recent, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/endpoints/:endpointId, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/health-check/endpoints/:endpointId/stats, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mEndpointsController {/api/endpoints}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints, GET} route[39m[38;5;3m +1ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, PUT} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/endpoints/:id, DELETE} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mIntervalsController {/api/intervals}:[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals, POST} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.48 [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/intervals/history, GET} route[39m[38;5;3m +0ms[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.49 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mInitializing health check scheduler with interval: 300000ms[39m
+health_monitor_api:dev: [95m[Nest] 1255374  - [39m04.08.2026, 20.32.49 [95m  DEBUG[39m [38;5;3m[HealthCheckScheduler] [39m[95mRunning scheduled health check...[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.49 [32m    LOG[39m [38;5;3m[HealthCheckService] [39m[32mChecking 0 endpoints...[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.49 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check completed: 0/0 endpoints online[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.49 [32m    LOG[39m [38;5;3m[HealthCheckScheduler] [39m[32mHealth check scheduler started (interval: 300000ms)[39m
+health_monitor_api:dev: [32m[Nest] 1255374  - [39m04.08.2026, 20.32.49 [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +2ms[39m
+health_monitor_api:dev: ✅ Health Monitor Service running on http://0.0.0.0:3400
+health_monitor_api:dev: 📚 API Documentation: http://localhost:3400/api
+ - Shutting down Turborepo tasks...Press CTRL+C again to exit forcefully.
+
+ Tasks:    0 successful, 2 total
+Cached:    0 cached, 2 total
+  Time:    9m5.987s 
+

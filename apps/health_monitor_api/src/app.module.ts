@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { HealthCheckModule } from './health-check/health-check.module';
 import { IntervalsModule } from './intervals/intervals.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { IntervalsModule } from './intervals/intervals.module';
       envFilePath: ['.env.local', '.env'],
     }),
     DatabaseModule,
+    AuthModule,
     HealthCheckModule,
     IntervalsModule,
   ],

@@ -8,8 +8,10 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: true,
+    origin: ['http://localhost:3401', 'http://localhost:3402'],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // Global validation pipe
@@ -20,6 +22,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  // Global API prefix
+  app.setGlobalPrefix('api');
 
   // Swagger documentation
   const showSwagger = process.env.SHOW_SWAGGER_UI === 'true';
