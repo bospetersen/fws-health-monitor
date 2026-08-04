@@ -1,0 +1,29 @@
+{
+  "name": "fws-health-monitor",
+  "version": "1.0.0",
+  "description": "Independent health monitoring service for FWS system",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "test": "turbo run test"
+  },
+  "keywords": [
+    "health-monitoring",
+    "system-monitoring",
+    "nestjs",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
