@@ -102,6 +102,8 @@
   border-radius: 8px;
   padding: 30px;
   margin-bottom: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -121,7 +123,7 @@
 .linksTable table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .linksTable thead {
@@ -129,7 +131,7 @@
 }
 
 .linksTable th {
-  padding: 12px 16px;
+  padding: 12px 0;
   text-align: left;
   font-weight: 600;
   color: #333;
@@ -139,6 +141,7 @@
 
 .linksTable th:first-child {
   text-align: center;
+  padding: 12px 16px;
 }
 
 .linksTable tbody tr {
@@ -161,17 +164,19 @@
   padding: 6px 10px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
-  font-size: 13px;
+  font-size: 16px;
   color: #333;
   display: block;
   max-width: 400px;
   word-break: break-all;
+  font-weight: bold;
 }
 
 .description {
   color: #666;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.4;
+  margin-left: 10px;
 }
 
 .actions {
@@ -184,12 +189,12 @@
 .btnOpen,
 .btnCopy,
 .btnDelete {
-  padding: 8px 12px;
+  padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: white;
   color: #333;
-  font-size: 13px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s;
   display: inline-flex;

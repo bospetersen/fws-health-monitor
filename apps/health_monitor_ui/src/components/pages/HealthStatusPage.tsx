@@ -4,17 +4,28 @@
  * Integrated with Health Monitor API
  */
 
-import { createSignal, createEffect, onCleanup, Show } from 'solid-js';
+import { createSignal, createEffect, For, onCleanup, Show } from 'solid-js';
 import { useNavigate } from '@solidjs/router';
 import { useAuth, getAuthToken } from '../../services/authService';
 import styles from './pageLayout.module.css';
 
-interface SystemLink {
+interface EndpointGroup {
+  _id: string;
+  name: string;
+  active: boolean;
+  sortOrder: number;
+}
+
+interface Endpoint {
+  _id: string;
   name: string;
   url: string;
-  type: 'Login' | 'Swagger';
+  active: boolean;
   description: string;
-  protocol: 'HTTP' | 'HTTPS';
+  groupId: string;
+  sortOrder: number;
+  status?: 'online' | 'offline';
+  checkedAt?: Date;
 }
 
 interface EndpointStatus {
@@ -35,80 +46,37 @@ export default function HealthStatusPage() {
   const [copiedUrl, setCopiedUrl] = createSignal<string | null>(null);
   const [endpointStatus, setEndpointStatus] = createSignal<Map<string, EndpointStatus>>(new Map());
   const [isLoading, setIsLoading] = createSignal(false);
+  const [groups, setGroups] = createSignal<EndpointGroup[]>([]);
+  const [endpoints, setEndpoints] = createSignal<Endpoint[]>([]);
 
-  // System links to monitor - from the original SystemLinksPage
-  const systemLinks: SystemLink[] = [
-    {
-      name: 'Colorworks Admin UI',
-      url: 'https://localhost:3100',
-      type: 'Login',
-      description: 'Admin interface for Colorworks system',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Colorworks Main UI',
-      url: 'https://localhost:3001',
-      type: 'Login',
-      description: 'Main user interface for Colorworks',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Auth Service UI',
-      url: 'https://localhost:3200',
-      type: 'Login',
-      description: 'Authentication and user management UI',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Device Service UI',
-      url: 'https://localhost:3300',
-      type: 'Login',
-      description: 'Device management and tracking interface',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Global Authenticator UI',
-      url: 'https://localhost:3301/login',
-      type: 'Login',
-      description: 'Global authentication interface',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Colorworks API',
-      url: 'https://localhost:3001/api',
-      type: 'Swagger',
-      description: 'Colorworks main API',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Auth Service API',
-      url: 'https://localhost:3200/api',
-      type: 'Swagger',
-      description: 'Authentication service API',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Device Service API',
-      url: 'https://localhost:3300/api',
-      type: 'Swagger',
-      description: 'Device management API',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Global Authenticator Swagger',
-      url: 'https://localhost:3301/swagger',
-      type: 'Swagger',
-      description: 'Global authenticator API documentation',
-      protocol: 'HTTPS',
-    },
-    {
-      name: 'Global Authenticator API',
-      url: 'https://localhost:3301/api',
-      type: 'Swagger',
-      description: 'Authentication and user management API',
-      protocol: 'HTTPS',
-    },
-  ];
+  // Fetch groups and endpoints from database
+  const loadData = async () => {
+    try {
+      const token = getAuthToken();
+      const [groupRes, endpointRes] = await Promise.all([
+        fetch('http://localhost:3400/api/endpoint-groups', {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        }),
+        fetch('http://localhost:3400/api/endpoints', {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        }),
+      ]);
+
+      if (groupRes.ok) {
+        const groupData = await groupRes.json();
+        setGroups(groupData);
+      }
+
+      if (endpointRes.ok) {
+        const endpointData = await endpointRes.json();
+        setEndpoints(endpointData);
+      }
+    } catch (error) {
+      console.error('Failed to load endpoints:', error);
+    }
+  };
 
   const checkEndpointHealth = async () => {
     setIsLoading(true);
@@ -141,8 +109,9 @@ export default function HealthStatusPage() {
     }
   };
 
-  // Check on mount
+  // Load endpoints and start health checks
   createEffect(() => {
+    loadData();
     checkEndpointHealth();
 
     // Set up auto-refresh every 5 minutes (300000ms)
@@ -151,8 +120,16 @@ export default function HealthStatusPage() {
     onCleanup(() => clearInterval(intervalId));
   });
 
-  const getStatusForLink = (linkName: string) => {
-    return endpointStatus().get(linkName);
+  let logoutButtonRef: HTMLButtonElement | undefined;
+
+  const getStatusForEndpoint = (endpointName: string) => {
+    return endpointStatus().get(endpointName);
+  };
+
+  const getGroupEndpoints = (groupId: string) => {
+    return endpoints()
+      .filter((e) => e.groupId === groupId)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
   };
 
   const handleCopyUrl = (url: string) => {
@@ -175,11 +152,6 @@ export default function HealthStatusPage() {
     // Redirect immediately
     window.location.href = '/login';
   };
-
-  let logoutButtonRef: HTMLButtonElement | undefined;
-
-  const loginLinks = systemLinks.filter((link) => link.type === 'Login');
-  const swaggerLinks = systemLinks.filter((link) => link.type === 'Swagger');
 
   return (
     <div class={styles.pageContainer}>
@@ -261,133 +233,79 @@ export default function HealthStatusPage() {
           </p>
         </section>
 
-        {/* Login Screens Section */}
-        <section class={styles.section}>
-          <h2>🔐 Login Screens</h2>
-          <div class={styles.linksTable}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Name</th>
-                  <th>URL</th>
-                  <th>Description</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loginLinks.map((link) => {
-                  const status = getStatusForLink(link.name);
-                  const isOffline = status?.status === 'offline';
-                  return (
-                    <tr class={isOffline ? styles.offlineRow : ''} key={link.url}>
-                      <td class={styles.statusCell}>
-                        <Show when={status} fallback={<span class={styles.statusUnknown}>—</span>}>
-                          <div class={styles.statusBadge}>
-                            {status!.status === 'online' ? (
-                              <span class={styles.runningBadge}>✓ Running</span>
-                            ) : (
-                              <span class={styles.offlineBadge}>✗ Offline</span>
-                            )}
-                          </div>
-                        </Show>
-                      </td>
-                      <td>
-                        <span class={styles.linkName}>{link.name}</span>
-                      </td>
-                      <td>
-                        <code class={styles.urlCode}>{link.url}</code>
-                      </td>
-                      <td>
-                        <span class={styles.description}>{link.description}</span>
-                      </td>
-                      <td class={styles.actions}>
-                        <button
-                          class={styles.btnOpen}
-                          onclick={() => handleOpenLink(link.url)}
-                          title="Open in new tab"
-                        >
-                          ↗️ Open
-                        </button>
-                        <button
-                          class={`${styles.btnCopy} ${copiedUrl() === link.url ? styles.copied : ''}`}
-                          onclick={() => handleCopyUrl(link.url)}
-                          title="Copy URL to clipboard"
-                        >
-                          {copiedUrl() === link.url ? '✓ Copied' : '📋 Copy'}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* Swagger API Documentation Section */}
-        <section class={styles.section}>
-          <h2>📚 API Documentation (Swagger)</h2>
-          <div class={styles.linksTable}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Name</th>
-                  <th>URL</th>
-                  <th>Description</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {swaggerLinks.map((link) => {
-                  const status = getStatusForLink(link.name);
-                  const isOffline = status?.status === 'offline';
-                  return (
-                    <tr class={isOffline ? styles.offlineRow : ''} key={link.url}>
-                      <td class={styles.statusCell}>
-                        <Show when={status} fallback={<span class={styles.statusUnknown}>—</span>}>
-                          <div class={styles.statusBadge}>
-                            {status!.status === 'online' ? (
-                              <span class={styles.runningBadge}>✓ Running</span>
-                            ) : (
-                              <span class={styles.offlineBadge}>✗ Offline</span>
-                            )}
-                          </div>
-                        </Show>
-                      </td>
-                      <td>
-                        <span class={styles.linkName}>{link.name}</span>
-                      </td>
-                      <td>
-                        <code class={styles.urlCode}>{link.url}</code>
-                      </td>
-                      <td>
-                        <span class={styles.description}>{link.description}</span>
-                      </td>
-                      <td class={styles.actions}>
-                        <button
-                          class={styles.btnOpen}
-                          onclick={() => handleOpenLink(link.url)}
-                          title="Open in new tab"
-                        >
-                          ↗️ Open
-                        </button>
-                        <button
-                          class={`${styles.btnCopy} ${copiedUrl() === link.url ? styles.copied : ''}`}
-                          onclick={() => handleCopyUrl(link.url)}
-                          title="Copy URL to clipboard"
-                        >
-                          {copiedUrl() === link.url ? '✓ Copied' : '📋 Copy'}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </section>
+        {/* Endpoint Groups Sections */}
+        <Show when={groups().length > 0} fallback={<p>No endpoint groups configured. Go to Manage Endpoints to add groups.</p>}>
+          <For each={groups()}>
+            {(group) => (
+              <section class={styles.section}>
+                <h2>{group.name}</h2>
+                <div class={styles.linksTable}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Status</th>
+                        <th>Name</th>
+                        <th>URL</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <Show when={getGroupEndpoints(group._id).length > 0} fallback={<tr><td colSpan={5} style={{"text-align": "center", "color": "#999"}}>No endpoints in this group</td></tr>}>
+                        <For each={getGroupEndpoints(group._id)}>
+                          {(endpoint) => {
+                            const status = getStatusForEndpoint(endpoint.name);
+                            const isOffline = status?.status === 'offline';
+                            return (
+                              <tr class={isOffline ? styles.offlineRow : ''} key={endpoint._id}>
+                                <td class={styles.statusCell}>
+                                  <Show when={status} fallback={<span class={styles.statusUnknown}>—</span>}>
+                                    <div class={styles.statusBadge}>
+                                      {status!.status === 'online' ? (
+                                        <span class={styles.runningBadge}>✓ Running</span>
+                                      ) : (
+                                        <span class={styles.offlineBadge}>✗ Offline</span>
+                                      )}
+                                    </div>
+                                  </Show>
+                                </td>
+                                <td>
+                                  <span class={styles.linkName}>{endpoint.name}</span>
+                                </td>
+                                <td>
+                                  <code class={styles.urlCode}>{endpoint.url}</code>
+                                </td>
+                                <td>
+                                  <span class={styles.description}>{endpoint.description}</span>
+                                </td>
+                                <td class={styles.actions}>
+                                  <button
+                                    class={styles.btnOpen}
+                                    onClick={() => handleOpenLink(endpoint.url)}
+                                    title="Open in new tab"
+                                  >
+                                    ↗️ Open
+                                  </button>
+                                  <button
+                                    class={`${styles.btnCopy} ${copiedUrl() === endpoint.url ? styles.copied : ''}`}
+                                    onClick={() => handleCopyUrl(endpoint.url)}
+                                    title="Copy URL to clipboard"
+                                  >
+                                    {copiedUrl() === endpoint.url ? '✓ Copied' : '📋 Copy'}
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          }}
+                        </For>
+                      </Show>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+          </For>
+        </Show>
 
         {/* Info Section */}
         <section class={styles.infoSection}>
