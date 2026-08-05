@@ -661,11 +661,13 @@ export default function ManageEndpointsPage() {
                                           "border": "none",
                                           "border-radius": "4px",
                                           "font-size": "16px",
+                                          "font-weight": "bold",
                                           "cursor": epIndex() === 0 ? "not-allowed" : "pointer",
                                           "opacity": epIndex() === 0 ? "0.6" : "1",
+                                          "line-height": "1",
                                         }}
                                       >
-                                        ↑
+                                        ⬆
                                       </button>
                                       <button
                                         disabled={epIndex() === groupEndpoints().length - 1}
@@ -677,11 +679,13 @@ export default function ManageEndpointsPage() {
                                           "border": "none",
                                           "border-radius": "4px",
                                           "font-size": "16px",
+                                          "font-weight": "bold",
                                           "cursor": epIndex() === groupEndpoints().length - 1 ? "not-allowed" : "pointer",
                                           "opacity": epIndex() === groupEndpoints().length - 1 ? "0.6" : "1",
+                                          "line-height": "1",
                                         }}
                                       >
-                                        ↓
+                                        ⬇
                                       </button>
                                       <button
                                         class={managementStyles.btnDelete}
