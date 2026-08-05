@@ -621,8 +621,7 @@ export default function ManageEndpointsPage() {
                         <table>
                           <thead>
                             <tr>
-                              <th>Status</th>
-                              <th>Name</th>
+                              <th style={{"width": "300px"}}>Name</th>
                               <th>Description</th>
                               <th>Actions</th>
                             </tr>
@@ -632,21 +631,10 @@ export default function ManageEndpointsPage() {
                               {(endpoint, epIndex) => (
                                 <>
                                   <tr 
-                                    class={`${endpoint.status === 'offline' ? managementStyles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''}`}
+                                    class={hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''}
                                     onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
                                     onMouseLeave={() => setHoveredEndpointId(null)}
                                   >
-                                    <td class={managementStyles.statusCell}>
-                                      <Show when={endpoint.status} fallback={<span class={managementStyles.statusUnknown}>—</span>}>
-                                        <div class={managementStyles.statusBadge}>
-                                          {endpoint.status === 'online' ? (
-                                            <span class={managementStyles.runningBadge}>✓ Running</span>
-                                          ) : (
-                                            <span class={managementStyles.offlineBadge}>✗ Offline</span>
-                                          )}
-                                        </div>
-                                      </Show>
-                                    </td>
                                     <td>
                                       <span class={managementStyles.linkName}>{endpoint.name}</span>
                                     </td>
@@ -703,14 +691,16 @@ export default function ManageEndpointsPage() {
                                       </button>
                                     </td>
                                   </tr>
-                                  <tr class={`${endpoint.status === 'offline' ? managementStyles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''}`}
+                                  <tr class={hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''}
+                                    style={{"border-bottom": "1px solid #e8e8e8"}}
                                     onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
                                     onMouseLeave={() => setHoveredEndpointId(null)}
                                   >
                                     <td></td>
-                                    <td colSpan={2}>
+                                    <td>
                                       <a 
                                         class={managementStyles.urlCode}
+                                        style={{"float": "left"}}
                                         href={endpoint.url.startsWith('http') ? endpoint.url : 'http://' + endpoint.url}
                                         target="_blank"
                                         rel="noopener noreferrer"

@@ -25,7 +25,7 @@ print('\n-----------------------------------------------------------------------
 
 # For PostgreSQL:
 
-# Hostname: localhost
+# Hostname: localhost                                                                                                                                                                                                                                                                                                                                                                                                                                           
 # Port: 5432
 # Superuser: postgres   
 # SuperUser Password: 123456789
