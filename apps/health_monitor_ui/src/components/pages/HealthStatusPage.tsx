@@ -4,7 +4,7 @@
  * Integrated with Health Monitor API
  */
 
-import { createSignal, createEffect, For, onCleanup, Show } from 'solid-js';
+import { createSignal, createEffect, createMemo, For, onCleanup } from 'solid-js';
 import { useNavigate } from '@solidjs/router';
 import { useAuth, getAuthToken } from '../../services/authService';
 import styles from './pageLayout.module.css';
@@ -45,7 +45,7 @@ export default function HealthStatusPage() {
   
   const [copiedUrl, setCopiedUrl] = createSignal<string | null>(null);
   const [hoveredEndpointId, setHoveredEndpointId] = createSignal<string | null>(null);
-  const [endpointStatus, setEndpointStatus] = createSignal<Map<string, EndpointStatus>>(new Map());
+  const [endpointStatus, setEndpointStatus] = createSignal<Record<string, EndpointStatus>>({});
   const [isLoading, setIsLoading] = createSignal(false);
   const [groups, setGroups] = createSignal<EndpointGroup[]>([]);
   const [endpoints, setEndpoints] = createSignal<Endpoint[]>([]);
@@ -82,7 +82,6 @@ export default function HealthStatusPage() {
   const checkEndpointHealth = async () => {
     setIsLoading(true);
     try {
-      console.log('Checking endpoint health via API...');
       const token = getAuthToken();
       const response = await fetch('http://localhost:3400/api/health-check/manual', {
         method: 'POST',
@@ -91,15 +90,13 @@ export default function HealthStatusPage() {
         },
         credentials: 'include',
       });
-      console.log('Health check response status:', response.status);
       if (response.ok) {
         const statuses: EndpointStatus[] = await response.json();
-        console.log('Health check results:', statuses);
-        const statusMap = new Map<string, EndpointStatus>();
+        const statusObj: Record<string, EndpointStatus> = {};
         statuses.forEach((status) => {
-          statusMap.set(status.name, status);
+          statusObj[status.id] = status;
         });
-        setEndpointStatus(statusMap);
+        setEndpointStatus({...statusObj});
       } else {
         console.error('Health check failed with status:', response.status);
       }
@@ -123,8 +120,8 @@ export default function HealthStatusPage() {
 
   let logoutButtonRef: HTMLButtonElement | undefined;
 
-  const getStatusForEndpoint = (endpointName: string) => {
-    return endpointStatus().get(endpointName);
+  const getStatusForEndpoint = (endpointId: string) => {
+    return endpointStatus()[endpointId];
   };
 
   const getGroupEndpoints = (groupId: string) => {
@@ -253,26 +250,27 @@ export default function HealthStatusPage() {
                       <Show when={getGroupEndpoints(group._id).length > 0} fallback={<tr><td colSpan={4} style={{"text-align": "center", "color": "#999"}}>No endpoints in this group</td></tr>}>
                         <For each={getGroupEndpoints(group._id)}>
                           {(endpoint) => {
-                            const status = getStatusForEndpoint(endpoint.name);
-                            const isOffline = status?.status === 'offline';
+                            const status = createMemo(() => endpointStatus()[endpoint._id]);
+                            const isOffline = () => status()?.status === 'offline';
                             return (
                               <>
                                 <tr 
-                                  class={`${isOffline ? styles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? styles.rowHovered : ''}`}
+                                  class={`${isOffline() ? styles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? styles.rowHovered : ''}`}
                                   key={endpoint._id}
                                   onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
                                   onMouseLeave={() => setHoveredEndpointId(null)}
                                 >
                                   <td class={styles.statusCell}>
-                                    <Show when={status} fallback={<span class={styles.statusUnknown}>—</span>}>
-                                      <div class={styles.statusBadge}>
-                                        {status!.status === 'online' ? (
-                                          <span class={styles.runningBadge}>✓ Running</span>
-                                        ) : (
-                                          <span class={styles.offlineBadge}>✗ Offline</span>
-                                        )}
-                                      </div>
-                                    </Show>
+                                    {console.log('Status lookup for', endpoint.name, ':', status())}
+                                    <div class={styles.statusBadge}>
+                                      {status()?.status === 'online' ? (
+                                        <span class={styles.runningBadge}>✓ Running</span>
+                                      ) : status()?.status === 'offline' ? (
+                                        <span class={styles.offlineBadge}>✗ Offline</span>
+                                      ) : (
+                                        <span class={styles.statusUnknown}>—</span>
+                                      )}
+                                    </div>
                                   </td>
                                   <td>
                                     <span class={styles.linkName}>{endpoint.name}</span>

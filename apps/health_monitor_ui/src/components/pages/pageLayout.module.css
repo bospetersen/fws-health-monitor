@@ -92,8 +92,8 @@
 }
 
 .pageContent {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .section {
@@ -101,8 +101,8 @@
   border-radius: 8px;
   padding: 30px;
   margin-bottom: 30px;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 0;
+  margin-right: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -139,8 +139,9 @@
 }
 
 .linksTable th:first-child {
-  text-align: center;
-  padding: 12px 16px;
+  text-align: left;
+  padding: 12px 16px 12px 0;
+  width: 100px;
 }
 
 .linksTable th:last-child {
@@ -342,8 +343,9 @@
 /* ===== Status Indicators ===== */
 
 .statusCell {
-  padding: 12px 16px;
-  text-align: center;
+  padding: 12px 16px 12px 0;
+  text-align: left;
+  width: 100px;
 }
 
 .statusBadge {
