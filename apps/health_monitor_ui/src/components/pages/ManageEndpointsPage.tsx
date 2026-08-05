@@ -34,6 +34,7 @@ export default function ManageEndpointsPage() {
   const [editMode, setEditMode] = createSignal(false);
   const [isLoading, setIsLoading] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
+  const [copiedUrl, setCopiedUrl] = createSignal<string | null>(null);
 
   // New group form
   const [newGroupName, setNewGroupName] = createSignal('');
@@ -300,6 +301,23 @@ export default function ManageEndpointsPage() {
     window.location.href = '/login';
   };
 
+  const handleOpenLink = (url: string) => {
+    window.open(url, '_blank');
+  };
+
+  const handleCopyUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedUrl(url);
+    setTimeout(() => setCopiedUrl(null), 2000);
+  };
+
+  const clearEndpointForm = () => {
+    if (nameInputRef) nameInputRef.value = '';
+    if (urlInputRef) urlInputRef.value = '';
+    if (descInputRef) descInputRef.value = '';
+    setSelectedGroupId(null);
+  };
+
   return (
     <div class={styles.pageContainer}>
       <header class={styles.pageHeader} style={{ "display": "flex", "justify-content": "space-between", "align-items": "center" }}>
@@ -363,10 +381,10 @@ export default function ManageEndpointsPage() {
           </div>
         </Show>
 
-        <div style={{ "display": editMode() ? "block" : "none" }}>
+        <div style={{ "display": editMode() ? "flex" : "none", "gap": "20px" }}>
           <div class={managementStyles.formSection}>
             <h2>Add New Group</h2>
-            <div style={{ "margin-top": "8px", "display": "flex", "gap": "6px" }}>
+            <div style={{ "margin-top": "12px", "display": "flex", "gap": "12px", "align-items": "center" }}>
               <form
                 onsubmit={(e) => {
                   e.preventDefault();
@@ -375,24 +393,26 @@ export default function ManageEndpointsPage() {
                     handleAddGroup();
                   }
                 }}
-                style={{ display: 'inline', "width": "100%", "display": "flex", "gap": "6px" }}
+                style={{ display: 'inline', "width": "100%", "display": "flex", "gap": "12px", "align-items": "center" }}
               >
                 <input
                   type="text"
                   ref={groupNameInputRef}
                   placeholder="Group name (e.g., Login Screens, API Documentation)"
-                  style={{ "padding": "6px", "border": "1px solid #ddd", "border-radius": "4px", "flex": "1" }}
+                  style={{ "padding": "12px", "border": "1px solid #ddd", "border-radius": "4px", "flex": "1", "font-size": "16px" }}
                 />
                 <button
                   type="submit"
                   style={{
-                    "padding": "6px 12px",
+                    "padding": "10px 20px",
                     "background-color": "#4CAF50",
                     "color": "white",
                     "border": "none",
                     "border-radius": "4px",
                     "cursor": "pointer",
-                    "font-size": "13px",
+                    "font-size": "16px",
+                    "font-weight": "500",
+                    "white-space": "nowrap"
                   }}
                 >
                   Create Group
@@ -408,13 +428,15 @@ export default function ManageEndpointsPage() {
                 <button
                   type="submit"
                   style={{
-                    "padding": "6px 12px",
+                    "padding": "10px 20px",
                     "background-color": "#999",
                     "color": "white",
                     "border": "none",
                     "border-radius": "4px",
                     "cursor": "pointer",
-                    "font-size": "13px",
+                    "font-size": "16px",
+                    "font-weight": "500",
+                    "white-space": "nowrap"
                   }}
                 >
                   Clear
@@ -425,9 +447,9 @@ export default function ManageEndpointsPage() {
 
           <div class={managementStyles.formSection}>
             <h2>Add Endpoints</h2>
-            <div style={{ "margin-top": "8px" }}>
+            <div style={{ "margin-top": "12px" }}>
               <Show when={groups().length === 0}>
-                <div style={{ "color": "#d32f2f", "background-color": "#ffebee", "padding": "8px", "border-radius": "4px", "margin-bottom": "12px", "font-size": "14px" }}>
+                <div style={{ "color": "#d32f2f", "background-color": "#ffebee", "padding": "12px", "border-radius": "4px", "margin-bottom": "16px", "font-size": "16px" }}>
                   Please create a group first before adding endpoints
                 </div>
               </Show>
@@ -435,7 +457,7 @@ export default function ManageEndpointsPage() {
                 value={selectedGroupId() || ''}
                 onchange={(e) => setSelectedGroupId(e.currentTarget.value || null)}
                 disabled={groups().length === 0}
-                style={{ "padding": "6px", "border": "1px solid #ddd", "border-radius": "4px", "width": "100%", "margin-bottom": "6px", "cursor": groups().length === 0 ? "not-allowed" : "pointer" }}
+                style={{ "padding": "12px", "border": "1px solid #ddd", "border-radius": "4px", "width": "100%", "margin-bottom": "12px", "cursor": groups().length === 0 ? "not-allowed" : "pointer", "font-size": "16px" }}
               >
                 <option value="">-- Select a group --</option>
                 <For each={groups()}>
@@ -446,21 +468,21 @@ export default function ManageEndpointsPage() {
                 type="text"
                 placeholder="Endpoint name"
                 ref={nameInputRef}
-                style={{ "padding": "6px", "border": "1px solid #ddd", "border-radius": "4px", "width": "100%", "margin-bottom": "6px" }}
+                style={{ "padding": "12px", "border": "1px solid #ddd", "border-radius": "4px", "width": "100%", "margin-bottom": "12px", "font-size": "16px" }}
               />
               <input
                 type="url"
                 placeholder="URL (https://...)"
                 ref={urlInputRef}
-                style={{ "padding": "6px", "border": "1px solid #ddd", "border-radius": "4px", "width": "100%", "margin-bottom": "6px" }}
+                style={{ "padding": "12px", "border": "1px solid #ddd", "border-radius": "4px", "width": "100%", "margin-bottom": "12px", "font-size": "16px" }}
               />
               <input
                 type="text"
                 placeholder="Description (optional)"
                 ref={descInputRef}
-                style={{ "padding": "6px", "border": "1px solid #ddd", "border-radius": "4px", "width": "100%", "margin-bottom": "8px" }}
+                style={{ "padding": "12px", "border": "1px solid #ddd", "border-radius": "4px", "width": "100%", "margin-bottom": "12px", "font-size": "16px" }}
               />
-              <div style={{ "display": "flex", "gap": "6px" }}>
+              <div style={{ "display": "flex", "gap": "12px", "align-items": "center" }}>
                 <form
                   onsubmit={(e) => {
                     e.preventDefault();
@@ -472,13 +494,14 @@ export default function ManageEndpointsPage() {
                     type="submit"
                     disabled={!selectedGroupId() || !nameInputRef?.value?.trim() || !urlInputRef?.value?.trim() || checkingHealth()}
                     style={{
-                      "padding": "6px 12px",
+                      "padding": "10px 20px",
                       "background-color": "#4CAF50",
                       "color": "white",
                       "border": "none",
                       "border-radius": "4px",
                       "cursor": "pointer",
-                      "font-size": "13px",
+                      "font-size": "16px",
+                      "font-weight": "500",
                     }}
                   >
                     {checkingHealth() ? 'Checking...' : 'Add Endpoint'}
@@ -494,13 +517,14 @@ export default function ManageEndpointsPage() {
                   <button
                     type="submit"
                     style={{
-                      "padding": "6px 12px",
+                      "padding": "10px 20px",
                       "background-color": "#999",
                       "color": "white",
                       "border": "none",
                       "border-radius": "4px",
                       "cursor": "pointer",
-                      "font-size": "13px",
+                      "font-size": "16px",
+                      "font-weight": "500",
                     }}
                   >
                     Cancel
@@ -514,80 +538,181 @@ export default function ManageEndpointsPage() {
         <div class={managementStyles.groupsContainer}>
           <Show when={groups().length > 0} fallback={<p>No groups yet. Create one to get started!</p>}>
             <For each={groups()}>
-              {(group, index) => {
+              {(group, groupIndex) => {
                 const groupEndpoints = () => endpoints().filter((e) => e.groupId === group._id).sort((a, b) => a.sortOrder - b.sortOrder);
 
                 return (
-                  <div class={managementStyles.groupCard}>
-                    <div class={managementStyles.endpointsSubList}>
-                      <Show when={groupEndpoints().length > 0} fallback={<p style={{ "color": "#999", "font-size": "14px" }}>No endpoints</p>}>
-                        <For each={groupEndpoints()}>
-                          {(endpoint, epIndex) => (
-                            <div class={managementStyles.endpointItem}>
-                              <div style={{ "flex": "1" }}>
-                                <strong>{endpoint.name}</strong>
-                                <div style={{ "font-size": "12px", "color": "#666" }}>{endpoint.url}</div>
-                                <Show when={endpoint.description}>
-                                  <div style={{ "font-size": "12px", "color": "#999" }}>{endpoint.description}</div>
-                                </Show>
-                              </div>
-
-                              <Show when={editMode()}>
-                                <div style={{ "display": "flex", "gap": "4px" }}>
-                                  <Show when={epIndex() > 0}>
-                                    <button
-                                      onclick={() => moveEndpoint(endpoint._id, group._id, 'up')}
-                                      style={{
-                                        "padding": "4px 8px",
-                                        "background-color": "#2196F3",
-                                        "color": "white",
-                                        "border": "none",
-                                        "border-radius": "4px",
-                                        "font-size": "12px",
-                                        "cursor": "pointer",
-                                      }}
-                                    >
-                                      ↑
-                                    </button>
-                                  </Show>
-                                  <Show when={epIndex() < groupEndpoints().length - 1}>
-                                    <button
-                                      onclick={() => moveEndpoint(endpoint._id, group._id, 'down')}
-                                      style={{
-                                        "padding": "4px 8px",
-                                        "background-color": "#2196F3",
-                                        "color": "white",
-                                        "border": "none",
-                                        "border-radius": "4px",
-                                        "font-size": "12px",
-                                        "cursor": "pointer",
-                                      }}
-                                    >
-                                      ↓
-                                    </button>
-                                  </Show>
-                                  <button
-                                    onclick={() => handleDeleteEndpoint(endpoint._id)}
-                                    style={{
-                                      "padding": "4px 8px",
-                                      "background-color": "#f44336",
-                                      "color": "white",
-                                      "border": "none",
-                                      "border-radius": "4px",
-                                      "font-size": "12px",
-                                      "cursor": "pointer",
-                                    }}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </Show>
-                            </div>
-                          )}
-                        </For>
+                  <section class={managementStyles.section}>
+                    <div style={{ "display": "flex", "justify-content": "space-between", "align-items": "center", "margin-bottom": "20px" }}>
+                      <h2>{group.name}</h2>
+                      <Show when={editMode()}>
+                        <div style={{ "display": "flex", "gap": "8px" }}>
+                          <Show when={groupIndex() > 0}>
+                            <button
+                              onClick={() => moveGroup(group._id, 'up')}
+                              style={{
+                                "padding": "6px 12px",
+                                "background-color": "#2196F3",
+                                "color": "white",
+                                "border": "none",
+                                "border-radius": "4px",
+                                "font-size": "12px",
+                                "cursor": "pointer",
+                              }}
+                            >
+                              ↑ Move Up
+                            </button>
+                          </Show>
+                          <Show when={groupIndex() < groups().length - 1}>
+                            <button
+                              onClick={() => moveGroup(group._id, 'down')}
+                              style={{
+                                "padding": "6px 12px",
+                                "background-color": "#2196F3",
+                                "color": "white",
+                                "border": "none",
+                                "border-radius": "4px",
+                                "font-size": "12px",
+                                "cursor": "pointer",
+                              }}
+                            >
+                              ↓ Move Down
+                            </button>
+                          </Show>
+                          <button
+                            onClick={() => handleToggleGroup(group._id)}
+                            style={{
+                              "padding": "6px 12px",
+                              "background-color": group.active ? "#4CAF50" : "#ff9800",
+                              "color": "white",
+                              "border": "none",
+                              "border-radius": "4px",
+                              "font-size": "12px",
+                              "cursor": "pointer",
+                            }}
+                          >
+                            {group.active ? '✓ Active' : 'Inactive'}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteGroup(group._id)}
+                            style={{
+                              "padding": "6px 12px",
+                              "background-color": "#f44336",
+                              "color": "white",
+                              "border": "none",
+                              "border-radius": "4px",
+                              "font-size": "12px",
+                              "cursor": "pointer",
+                            }}
+                          >
+                            Delete Group
+                          </button>
+                        </div>
                       </Show>
                     </div>
-                  </div>
+
+                    <Show when={groupEndpoints().length > 0} fallback={<p style={{ "color": "#999", "font-size": "14px" }}>No endpoints in this group</p>}>
+                      <div class={managementStyles.linksTable}>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Status</th>
+                              <th>Name</th>
+                              <th>URL</th>
+                              <th>Description</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <For each={groupEndpoints()}>
+                              {(endpoint, epIndex) => (
+                                <tr class={endpoint.status === 'offline' ? managementStyles.offlineRow : ''}>
+                                  <td class={managementStyles.statusCell}>
+                                    <Show when={endpoint.status} fallback={<span class={managementStyles.statusUnknown}>—</span>}>
+                                      <div class={managementStyles.statusBadge}>
+                                        {endpoint.status === 'online' ? (
+                                          <span class={managementStyles.runningBadge}>✓ Running</span>
+                                        ) : (
+                                          <span class={managementStyles.offlineBadge}>✗ Offline</span>
+                                        )}
+                                      </div>
+                                    </Show>
+                                  </td>
+                                  <td>
+                                    <span class={managementStyles.linkName}>{endpoint.name}</span>
+                                  </td>
+                                  <td>
+                                    <code class={managementStyles.urlCode}>{endpoint.url}</code>
+                                  </td>
+                                  <td>
+                                    <span class={managementStyles.description}>{endpoint.description}</span>
+                                  </td>
+                                  <td class={managementStyles.actions}>
+                                    <button
+                                      class={managementStyles.btnOpen}
+                                      onClick={() => handleOpenLink(endpoint.url)}
+                                      title="Open in new tab"
+                                    >
+                                      ↗️ Open
+                                    </button>
+                                    <button
+                                      class={`${managementStyles.btnCopy} ${
+                                        copiedUrl() === endpoint.url ? managementStyles.copied : ''
+                                      }`}
+                                      onClick={() => handleCopyUrl(endpoint.url)}
+                                      title="Copy URL to clipboard"
+                                    >
+                                      {copiedUrl() === endpoint.url ? '✓ Copied' : '📋 Copy'}
+                                    </button>
+                                    <Show when={editMode()}>
+                                      <Show when={epIndex() > 0}>
+                                        <button
+                                          onClick={() => moveEndpoint(endpoint._id, group._id, 'up')}
+                                          style={{
+                                            "padding": "6px 12px",
+                                            "background-color": "#2196F3",
+                                            "color": "white",
+                                            "border": "none",
+                                            "border-radius": "4px",
+                                            "font-size": "12px",
+                                            "cursor": "pointer",
+                                          }}
+                                        >
+                                          ↑
+                                        </button>
+                                      </Show>
+                                      <Show when={epIndex() < groupEndpoints().length - 1}>
+                                        <button
+                                          onClick={() => moveEndpoint(endpoint._id, group._id, 'down')}
+                                          style={{
+                                            "padding": "6px 12px",
+                                            "background-color": "#2196F3",
+                                            "color": "white",
+                                            "border": "none",
+                                            "border-radius": "4px",
+                                            "font-size": "12px",
+                                            "cursor": "pointer",
+                                          }}
+                                        >
+                                          ↓
+                                        </button>
+                                      </Show>
+                                      <button
+                                        class={managementStyles.btnDelete}
+                                        onClick={() => handleDeleteEndpoint(endpoint._id)}
+                                      >
+                                        Delete
+                                      </button>
+                                    </Show>
+                                  </td>
+                                </tr>
+                              )}
+                            </For>
+                          </tbody>
+                        </table>
+                      </div>
+                    </Show>
+                  </section>
                 );
               }}
             </For>

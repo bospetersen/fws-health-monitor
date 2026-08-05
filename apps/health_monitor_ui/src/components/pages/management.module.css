@@ -1,6 +1,5 @@
 .contentArea {
   padding: 20px;
-  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -28,15 +27,17 @@
 
 .formSection {
   background-color: #f9f9f9;
-  padding: 16px;
+  padding: 24px;
   border-radius: 8px;
   margin-bottom: 24px;
   border: 1px solid #e0e0e0;
+  flex: 1;
 }
 
 .formSection h2 {
-  margin: 0 0 12px 0;
-  font-size: 16px;
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .groupsContainer {
@@ -93,4 +94,182 @@
   display: block;
   margin-bottom: 4px;
   color: #333;
+}
+
+/* Table Styles */
+.section {
+  background: white;
+  border-radius: 8px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px 0;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.linksTable {
+  overflow-x: auto;
+}
+
+.linksTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.linksTable thead {
+  background-color: #f9f9f9;
+}
+
+.linksTable th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+.linksTable th:first-child {
+  text-align: center;
+}
+
+.linksTable tbody tr {
+  border-bottom: 1px solid #e8e8e8;
+  transition: background-color 0.2s;
+}
+
+.linksTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.linkName {
+  font-weight: 600;
+  color: #0066cc;
+  display: block;
+}
+
+.urlCode {
+  background-color: #f5f5f5;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #333;
+  display: block;
+  max-width: 400px;
+  word-break: break-all;
+}
+
+.description {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.actions {
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.btnOpen,
+.btnCopy,
+.btnDelete {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  color: #333;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.btnOpen:hover {
+  background-color: #0066cc;
+  color: white;
+  border-color: #0066cc;
+}
+
+.btnCopy {
+  background-color: #f0f0f0;
+}
+
+.btnCopy:hover {
+  background-color: #e0e0e0;
+}
+
+.btnCopy.copied {
+  background-color: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+.btnDelete {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #ef5350;
+}
+
+.btnDelete:hover {
+  background-color: #f44336;
+  color: white;
+  border-color: #f44336;
+}
+
+.statusCell {
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+}
+
+.runningBadge {
+  background-color: #4caf50;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.offlineBadge {
+  background-color: #f44336;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusUnknown {
+  color: #999;
+  font-size: 16px;
+}
+
+.offlineRow {
+  background-color: #ffebee;
+}
+
+.offlineRow:hover {
+  background-color: #ffcdd2;
 }
