@@ -288,7 +288,7 @@ export default function HealthStatusPage() {
                                   </td>
                                 </tr>
                                 <tr 
-                                  class={`${isOffline ? styles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? styles.rowHovered : ''}`}
+                                  class={`${isOffline() ? styles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? styles.rowHovered : ''}`}
                                   onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
                                   onMouseLeave={() => setHoveredEndpointId(null)}
                                 >
