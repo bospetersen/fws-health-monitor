@@ -261,7 +261,6 @@ export default function HealthStatusPage() {
                                   onMouseLeave={() => setHoveredEndpointId(null)}
                                 >
                                   <td class={styles.statusCell}>
-                                    {console.log('Status lookup for', endpoint.name, ':', status())}
                                     <div class={styles.statusBadge}>
                                       {status()?.status === 'online' ? (
                                         <span class={styles.runningBadge}>✓ Running</span>
