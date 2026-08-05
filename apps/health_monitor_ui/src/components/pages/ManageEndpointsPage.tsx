@@ -35,6 +35,7 @@ export default function ManageEndpointsPage() {
   const [isLoading, setIsLoading] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
   const [copiedUrl, setCopiedUrl] = createSignal<string | null>(null);
+  const [hoveredEndpointId, setHoveredEndpointId] = createSignal<string | null>(null);
 
   // New group form
   const [newGroupName, setNewGroupName] = createSignal('');
@@ -301,13 +302,11 @@ export default function ManageEndpointsPage() {
     window.location.href = '/login';
   };
 
-  const handleOpenLink = (url: string) => {
-    window.open(url, '_blank');
-  };
-
   const handleCopyUrl = (url: string) => {
+    console.log('Copy button clicked:', url);
     navigator.clipboard.writeText(url);
     setCopiedUrl(url);
+    console.log('setCopiedUrl called with:', url);
     setTimeout(() => setCopiedUrl(null), 2000);
   };
 
@@ -377,7 +376,6 @@ export default function ManageEndpointsPage() {
         <Show when={error()}>
           <div class={managementStyles.errorBox}>
             <strong>Error:</strong> {error()}
-            <button onclick={() => setError(null)}>Dismiss</button>
           </div>
         </Show>
 
@@ -625,7 +623,6 @@ export default function ManageEndpointsPage() {
                             <tr>
                               <th>Status</th>
                               <th>Name</th>
-                              <th>URL</th>
                               <th>Description</th>
                               <th>Actions</th>
                             </tr>
@@ -633,84 +630,97 @@ export default function ManageEndpointsPage() {
                           <tbody>
                             <For each={groupEndpoints()}>
                               {(endpoint, epIndex) => (
-                                <tr class={endpoint.status === 'offline' ? managementStyles.offlineRow : ''}>
-                                  <td class={managementStyles.statusCell}>
-                                    <Show when={endpoint.status} fallback={<span class={managementStyles.statusUnknown}>—</span>}>
-                                      <div class={managementStyles.statusBadge}>
-                                        {endpoint.status === 'online' ? (
-                                          <span class={managementStyles.runningBadge}>✓ Running</span>
-                                        ) : (
-                                          <span class={managementStyles.offlineBadge}>✗ Offline</span>
-                                        )}
-                                      </div>
-                                    </Show>
-                                  </td>
-                                  <td>
-                                    <span class={managementStyles.linkName}>{endpoint.name}</span>
-                                  </td>
-                                  <td>
-                                    <code class={managementStyles.urlCode}>{endpoint.url}</code>
-                                  </td>
-                                  <td>
-                                    <span class={managementStyles.description}>{endpoint.description}</span>
-                                  </td>
-                                  <td class={managementStyles.actions}>
-                                    <button
-                                      class={managementStyles.btnOpen}
-                                      onClick={() => handleOpenLink(endpoint.url)}
-                                      title="Open in new tab"
-                                    >
-                                      ↗️ Open
-                                    </button>
-                                    <button
-                                      class={`${managementStyles.btnCopy} ${
-                                        copiedUrl() === endpoint.url ? managementStyles.copied : ''
-                                      }`}
-                                      onClick={() => handleCopyUrl(endpoint.url)}
-                                      title="Copy URL to clipboard"
-                                    >
-                                      {copiedUrl() === endpoint.url ? '✓ Copied' : '📋 Copy'}
-                                    </button>
-                                    <Show when={epIndex() > 0}>
+                                <>
+                                  <tr 
+                                    class={`${endpoint.status === 'offline' ? managementStyles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''}`}
+                                    onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
+                                    onMouseLeave={() => setHoveredEndpointId(null)}
+                                  >
+                                    <td class={managementStyles.statusCell}>
+                                      <Show when={endpoint.status} fallback={<span class={managementStyles.statusUnknown}>—</span>}>
+                                        <div class={managementStyles.statusBadge}>
+                                          {endpoint.status === 'online' ? (
+                                            <span class={managementStyles.runningBadge}>✓ Running</span>
+                                          ) : (
+                                            <span class={managementStyles.offlineBadge}>✗ Offline</span>
+                                          )}
+                                        </div>
+                                      </Show>
+                                    </td>
+                                    <td>
+                                      <span class={managementStyles.linkName}>{endpoint.name}</span>
+                                    </td>
+                                    <td>
+                                      <span class={managementStyles.description}>{endpoint.description}</span>
+                                    </td>
+                                    <td class={managementStyles.actions}>
                                       <button
-                                        onClick={() => moveEndpoint(endpoint._id, group._id, 'up')}
-                                        style={{
-                                          "padding": "10px 15px",
-                                          "background-color": "#2196F3",
-                                          "color": "white",
-                                          "border": "none",
-                                          "border-radius": "4px",
-                                          "font-size": "16px",
-                                          "cursor": "pointer",
-                                        }}
+                                        class={`${managementStyles.btnCopy} ${
+                                          copiedUrl() === endpoint.url ? managementStyles.copied : ''
+                                        }`}
+                                        onClick={() => handleCopyUrl(endpoint.url)}
+                                        title="Copy URL to clipboard"
                                       >
-                                        ↑
+                                        {copiedUrl() === endpoint.url ? '✓ Copied' : '📋 Copy'}
                                       </button>
-                                    </Show>
-                                    <Show when={epIndex() < groupEndpoints().length - 1}>
+                                      <Show when={epIndex() > 0}>
+                                        <button
+                                          onClick={() => moveEndpoint(endpoint._id, group._id, 'up')}
+                                          style={{
+                                            "padding": "10px 15px",
+                                            "background-color": "#2196F3",
+                                            "color": "white",
+                                            "border": "none",
+                                            "border-radius": "4px",
+                                            "font-size": "16px",
+                                            "cursor": "pointer",
+                                          }}
+                                        >
+                                          ↑
+                                        </button>
+                                      </Show>
+                                      <Show when={epIndex() < groupEndpoints().length - 1}>
+                                        <button
+                                          onClick={() => moveEndpoint(endpoint._id, group._id, 'down')}
+                                          style={{
+                                            "padding": "10px 15px",
+                                            "background-color": "#2196F3",
+                                            "color": "white",
+                                            "border": "none",
+                                            "border-radius": "4px",
+                                            "font-size": "16px",
+                                            "cursor": "pointer",
+                                          }}
+                                        >
+                                          ↓
+                                        </button>
+                                      </Show>
                                       <button
-                                        onClick={() => moveEndpoint(endpoint._id, group._id, 'down')}
-                                        style={{
-                                          "padding": "10px 15px",
-                                          "background-color": "#2196F3",
-                                          "color": "white",
-                                          "border": "none",
-                                          "border-radius": "4px",
-                                          "font-size": "16px",
-                                          "cursor": "pointer",
-                                        }}
+                                        class={managementStyles.btnDelete}
+                                        onClick={() => handleDeleteEndpoint(endpoint._id)}
                                       >
-                                        ↓
+                                        Delete
                                       </button>
-                                    </Show>
-                                    <button
-                                      class={managementStyles.btnDelete}
-                                      onClick={() => handleDeleteEndpoint(endpoint._id)}
-                                    >
-                                      Delete
-                                    </button>
-                                  </td>
-                                </tr>
+                                    </td>
+                                  </tr>
+                                  <tr class={`${endpoint.status === 'offline' ? managementStyles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''}`}
+                                    onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
+                                    onMouseLeave={() => setHoveredEndpointId(null)}
+                                  >
+                                    <td></td>
+                                    <td colSpan={2}>
+                                      <a 
+                                        class={managementStyles.urlCode}
+                                        href={endpoint.url.startsWith('http') ? endpoint.url : 'http://' + endpoint.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        🔗 {endpoint.url}
+                                      </a>
+                                    </td>
+                                    <td></td>
+                                  </tr>
+                                </>
                               )}
                             </For>
                           </tbody>

@@ -26,7 +26,6 @@
 }
 
 .formSection {
-  background-color: #f9f9f9;
   padding: 24px;
   border-radius: 8px;
   margin-bottom: 24px;
@@ -127,7 +126,7 @@
 }
 
 .linksTable thead {
-  background-color: #f9f9f9;
+  background-color: white;
 }
 
 .linksTable th {
@@ -144,12 +143,36 @@
   padding: 12px 16px;
 }
 
+.linksTable th:last-child {
+  width: auto;
+  text-align: right;
+  padding: 12px 16px 12px 0;
+  visibility: hidden;
+}
+
 .linksTable tbody tr {
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: none;
   transition: background-color 0.2s;
 }
 
+.linksTable tbody tr:has(td[colspan]) {
+  border-bottom: 1px solid #e8e8e8;
+  border-top: none;
+}
+
+.linksTable tbody tr:has(td[colspan]).rowHovered {
+  border-bottom: 1px solid #e8e8e8;
+}
+
 .linksTable tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.linksTable tbody tr:not(:has(code)):hover + tr:has(code) {
+  background-color: #f9f9f9;
+}
+
+.linksTable tbody tr.rowHovered {
   background-color: #f9f9f9;
 }
 
@@ -160,23 +183,21 @@
 }
 
 .urlCode {
-  background-color: #f5f5f5;
-  padding: 6px 10px;
-  border-radius: 4px;
+  padding: 0 0 5px 0;
+  border-radius: 0;
   font-family: 'Courier New', monospace;
-  font-size: 16px;
+  font-size: 18px;
   color: #333;
-  display: block;
-  max-width: 400px;
+  display: inline-block;
   word-break: break-all;
   font-weight: bold;
+  text-decoration: none;
 }
 
 .description {
   color: #666;
   font-size: 16px;
   line-height: 1.4;
-  margin-left: 10px;
 }
 
 .actions {
@@ -184,6 +205,9 @@
   display: flex;
   gap: 8px;
   white-space: nowrap;
+  width: auto;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .btnOpen,
@@ -202,6 +226,7 @@
   gap: 4px;
   min-width: 80px;
   justify-content: center;
+  z-index: 10;
 }
 
 .btnOpen:hover {

@@ -44,6 +44,7 @@ export default function HealthStatusPage() {
   const auth = useAuth();
   
   const [copiedUrl, setCopiedUrl] = createSignal<string | null>(null);
+  const [hoveredEndpointId, setHoveredEndpointId] = createSignal<string | null>(null);
   const [endpointStatus, setEndpointStatus] = createSignal<Map<string, EndpointStatus>>(new Map());
   const [isLoading, setIsLoading] = createSignal(false);
   const [groups, setGroups] = createSignal<EndpointGroup[]>([]);
@@ -133,14 +134,13 @@ export default function HealthStatusPage() {
   };
 
   const handleCopyUrl = (url: string) => {
+    console.log('Copy button clicked:', url);
     navigator.clipboard.writeText(url);
     setCopiedUrl(url);
+    console.log('setCopiedUrl called with:', url);
     setTimeout(() => setCopiedUrl(null), 2000);
   };
 
-  const handleOpenLink = (url: string) => {
-    window.open(url, '_blank');
-  };
 
   const handleLogout = () => {
     // Clear auth state directly
@@ -245,56 +245,70 @@ export default function HealthStatusPage() {
                       <tr>
                         <th>Status</th>
                         <th>Name</th>
-                        <th>URL</th>
                         <th>Description</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <Show when={getGroupEndpoints(group._id).length > 0} fallback={<tr><td colSpan={5} style={{"text-align": "center", "color": "#999"}}>No endpoints in this group</td></tr>}>
+                      <Show when={getGroupEndpoints(group._id).length > 0} fallback={<tr><td colSpan={4} style={{"text-align": "center", "color": "#999"}}>No endpoints in this group</td></tr>}>
                         <For each={getGroupEndpoints(group._id)}>
                           {(endpoint) => {
                             const status = getStatusForEndpoint(endpoint.name);
                             const isOffline = status?.status === 'offline';
                             return (
-                              <tr class={isOffline ? styles.offlineRow : ''} key={endpoint._id}>
-                                <td class={styles.statusCell}>
-                                  <Show when={status} fallback={<span class={styles.statusUnknown}>—</span>}>
-                                    <div class={styles.statusBadge}>
-                                      {status!.status === 'online' ? (
-                                        <span class={styles.runningBadge}>✓ Running</span>
-                                      ) : (
-                                        <span class={styles.offlineBadge}>✗ Offline</span>
-                                      )}
-                                    </div>
-                                  </Show>
-                                </td>
-                                <td>
-                                  <span class={styles.linkName}>{endpoint.name}</span>
-                                </td>
-                                <td>
-                                  <code class={styles.urlCode}>{endpoint.url}</code>
-                                </td>
-                                <td>
-                                  <span class={styles.description}>{endpoint.description}</span>
-                                </td>
-                                <td class={styles.actions}>
-                                  <button
-                                    class={styles.btnOpen}
-                                    onClick={() => handleOpenLink(endpoint.url)}
-                                    title="Open in new tab"
-                                  >
-                                    ↗️ Open
-                                  </button>
-                                  <button
-                                    class={`${styles.btnCopy} ${copiedUrl() === endpoint.url ? styles.copied : ''}`}
-                                    onClick={() => handleCopyUrl(endpoint.url)}
-                                    title="Copy URL to clipboard"
-                                  >
-                                    {copiedUrl() === endpoint.url ? '✓ Copied' : '📋 Copy'}
-                                  </button>
-                                </td>
-                              </tr>
+                              <>
+                                <tr 
+                                  class={`${isOffline ? styles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? styles.rowHovered : ''}`}
+                                  key={endpoint._id}
+                                  onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
+                                  onMouseLeave={() => setHoveredEndpointId(null)}
+                                >
+                                  <td class={styles.statusCell}>
+                                    <Show when={status} fallback={<span class={styles.statusUnknown}>—</span>}>
+                                      <div class={styles.statusBadge}>
+                                        {status!.status === 'online' ? (
+                                          <span class={styles.runningBadge}>✓ Running</span>
+                                        ) : (
+                                          <span class={styles.offlineBadge}>✗ Offline</span>
+                                        )}
+                                      </div>
+                                    </Show>
+                                  </td>
+                                  <td>
+                                    <span class={styles.linkName}>{endpoint.name}</span>
+                                  </td>
+                                  <td>
+                                    <span class={styles.description}>{endpoint.description}</span>
+                                  </td>
+                                  <td class={styles.actions}>
+                                    <button
+                                      class={`${styles.btnCopy} ${copiedUrl() === endpoint.url ? styles.copied : ''}`}
+                                      onClick={() => handleCopyUrl(endpoint.url)}
+                                      title="Copy URL to clipboard"
+                                    >
+                                      {copiedUrl() === endpoint.url ? '✓ Copied' : '📋 Copy'}
+                                    </button>
+                                  </td>
+                                </tr>
+                                <tr 
+                                  class={`${isOffline ? styles.offlineRow : ''} ${hoveredEndpointId() === endpoint._id ? styles.rowHovered : ''}`}
+                                  onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
+                                  onMouseLeave={() => setHoveredEndpointId(null)}
+                                >
+                                  <td></td>
+                                  <td colSpan={2}>
+                                    <a 
+                                      class={styles.urlCode}
+                                      href={endpoint.url.startsWith('http') ? endpoint.url : 'http://' + endpoint.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      🔗 {endpoint.url}
+                                    </a>
+                                  </td>
+                                  <td></td>
+                                </tr>
+                              </>
                             );
                           }}
                         </For>
