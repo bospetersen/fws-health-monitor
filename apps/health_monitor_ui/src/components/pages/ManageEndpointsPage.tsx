@@ -651,38 +651,38 @@ export default function ManageEndpointsPage() {
                                       >
                                         {copiedUrl() === endpoint.url ? '✓ Copied' : '📋 Copy'}
                                       </button>
-                                      <Show when={epIndex() > 0}>
-                                        <button
-                                          onClick={() => moveEndpoint(endpoint._id, group._id, 'up')}
-                                          style={{
-                                            "padding": "10px 15px",
-                                            "background-color": "#2196F3",
-                                            "color": "white",
-                                            "border": "none",
-                                            "border-radius": "4px",
-                                            "font-size": "16px",
-                                            "cursor": "pointer",
-                                          }}
-                                        >
-                                          ↑
-                                        </button>
-                                      </Show>
-                                      <Show when={epIndex() < groupEndpoints().length - 1}>
-                                        <button
-                                          onClick={() => moveEndpoint(endpoint._id, group._id, 'down')}
-                                          style={{
-                                            "padding": "10px 15px",
-                                            "background-color": "#2196F3",
-                                            "color": "white",
-                                            "border": "none",
-                                            "border-radius": "4px",
-                                            "font-size": "16px",
-                                            "cursor": "pointer",
-                                          }}
-                                        >
-                                          ↓
-                                        </button>
-                                      </Show>
+                                      <button
+                                        disabled={epIndex() === 0}
+                                        onClick={() => moveEndpoint(endpoint._id, group._id, 'up')}
+                                        style={{
+                                          "padding": "5px 15px",
+                                          "background-color": epIndex() === 0 ? "#cccccc" : "#2196F3",
+                                          "color": "white",
+                                          "border": "none",
+                                          "border-radius": "4px",
+                                          "font-size": "16px",
+                                          "cursor": epIndex() === 0 ? "not-allowed" : "pointer",
+                                          "opacity": epIndex() === 0 ? "0.6" : "1",
+                                        }}
+                                      >
+                                        ↑
+                                      </button>
+                                      <button
+                                        disabled={epIndex() === groupEndpoints().length - 1}
+                                        onClick={() => moveEndpoint(endpoint._id, group._id, 'down')}
+                                        style={{
+                                          "padding": "5px 15px",
+                                          "background-color": epIndex() === groupEndpoints().length - 1 ? "#cccccc" : "#2196F3",
+                                          "color": "white",
+                                          "border": "none",
+                                          "border-radius": "4px",
+                                          "font-size": "16px",
+                                          "cursor": epIndex() === groupEndpoints().length - 1 ? "not-allowed" : "pointer",
+                                          "opacity": epIndex() === groupEndpoints().length - 1 ? "0.6" : "1",
+                                        }}
+                                      >
+                                        ↓
+                                      </button>
                                       <button
                                         class={managementStyles.btnDelete}
                                         onClick={() => handleDeleteEndpoint(endpoint._id)}
