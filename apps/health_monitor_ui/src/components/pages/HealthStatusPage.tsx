@@ -263,9 +263,9 @@ export default function HealthStatusPage() {
                                   <td class={styles.statusCell}>
                                     <div class={styles.statusBadge}>
                                       {status()?.status === 'online' ? (
-                                        <span class={styles.runningBadge}>✓ Running</span>
+                                        <span class={styles.runningBadge}>Running</span>
                                       ) : status()?.status === 'offline' ? (
-                                        <span class={styles.offlineBadge}>✗ Offline</span>
+                                        <span class={styles.offlineBadge}>Offline</span>
                                       ) : (
                                         <span class={styles.statusUnknown}>—</span>
                                       )}
