@@ -707,11 +707,11 @@ export default function ManageEndpointsPage() {
 
                 return (
                   <section class={managementStyles.section}>
-                    <div style={{ "display": "flex", "align-items": "center", "gap": "10px", "cursor": "pointer", "user-select": "none", "margin-bottom": "20px" }} onClick={() => toggleGroupCollapsed(group._id)}>
-                      <span style={{ "font-size": "20px", "transition": "transform 0.2s", "display": "inline-block", "transform": isGroupCollapsed(group._id) ? "rotate(-90deg)" : "rotate(0deg)" }}>
+                    <div style={{ "display": "flex", "align-items": "center", "gap": "10px", "cursor": "pointer", "user-select": "none", "margin-bottom": isGroupCollapsed(group._id) ? "0px" : "20px", "padding-bottom": "15px", "border-bottom": "2px solid #f0f0f0" }} onClick={() => toggleGroupCollapsed(group._id)}>
+                      <span style={{ "font-size": "20px", "transition": "transform 0.2s", "display": "inline-block", "transform": isGroupCollapsed(group._id) ? "rotate(-90deg)" : "rotate(0deg)", "vertical-align": "middle", "margin-top": "-10px", "color": "#2196F3" }}>
                         ▼
                       </span>
-                      <h2 style={{ "margin": "0", "width": "100%" }}>{group.name}</h2>
+                      <h2 style={{ "margin": "0", "width": "100%", "border-bottom": "none" }}>{group.name}</h2>
                     </div>
 
                     <Show when={!isGroupCollapsed(group._id)}>
