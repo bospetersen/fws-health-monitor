@@ -776,7 +776,7 @@ export default function ManageEndpointsPage() {
                       >
                         Delete
                       </button>
-                    </div>                    </Show>
+                    </div>
                     <Show when={groupEndpoints().length > 0} fallback={<p style={{ "color": "#999", "font-size": "14px" }}>No endpoints in this group</p>}>
                       <div class={managementStyles.linksTable} style={{ "position": "relative" }}>
                         <Show when={isReordering() && reorderingGroupId() === group._id}>
@@ -945,6 +945,7 @@ export default function ManageEndpointsPage() {
                           </tbody>
                         </table>
                       </div>
+                    </Show>
                     </Show>
                   </section>
                 );
