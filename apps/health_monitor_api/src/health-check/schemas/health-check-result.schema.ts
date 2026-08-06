@@ -27,6 +27,9 @@ export class HealthCheckResult extends Document {
   @Prop({ type: String, default: null })
   stackTrace: string;
 
+  @Prop({ type: String, default: null })
+  responseBody: string;
+
   @Prop({ default: Date.now })
   checkedAt: Date;
 

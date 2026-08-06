@@ -37,6 +37,7 @@ interface EndpointStatus {
   statusCode?: number;
   errorMessage?: string;
   stackTrace?: string;
+  responseBody?: string;
   checkedAt: Date;
 }
 
@@ -366,6 +367,14 @@ export default function HealthStatusPage() {
                                                 <strong style={{"display": "block", "margin-bottom": "4px"}}>Stack Trace:</strong>
                                                 <pre style={{"background-color": "#f5f5f5", "padding": "8px", "border-radius": "4px", "overflow-x": "auto", "font-size": "16px", "color": "#333", "margin": "0", "white-space": "pre-wrap", "word-break": "break-word", "line-height": "1.4"}}>
 {status()?.stackTrace}
+                                                </pre>
+                                              </div>
+                                            )}
+                                            {status()?.responseBody && status()?.status === 'offline' && (
+                                              <div style={{"margin-top": "8px"}}>
+                                                <strong style={{"display": "block", "margin-bottom": "4px"}}>Response:</strong>
+                                                <pre style={{"background-color": "#f5f5f5", "padding": "8px", "border-radius": "4px", "overflow-x": "auto", "font-size": "16px", "color": "#333", "margin": "0", "white-space": "pre-wrap", "word-break": "break-word", "line-height": "1.4"}}>
+{status()?.responseBody}
                                                 </pre>
                                               </div>
                                             )}

@@ -16,6 +16,7 @@ export interface EndpointStatus {
   statusCode?: number;
   errorMessage?: string;
   stackTrace?: string;
+  responseBody?: string;
   checkedAt: Date;
 }
 
@@ -32,7 +33,7 @@ export class HealthCheckService {
   private checkEndpointPromise(
     url: string,
     timeout: number = 3000,
-  ): Promise<{ online: boolean; responseTime: number; statusCode?: number; errorMessage?: string; stackTrace?: string }> {
+  ): Promise<{ online: boolean; responseTime: number; statusCode?: number; errorMessage?: string; stackTrace?: string; responseBody?: string }> {
     return new Promise((resolve) => {
       const startTime = Date.now();
       let completed = false;
@@ -45,7 +46,8 @@ export class HealthCheckService {
             responseTime: timeout, 
             statusCode: 0, 
             errorMessage: 'Timeout', 
-            stackTrace: 'Request timed out after ' + timeout + 'ms'
+            stackTrace: 'Request timed out after ' + timeout + 'ms',
+            responseBody: 'No response received'
           });
         }
       }, timeout);
@@ -61,11 +63,16 @@ export class HealthCheckService {
             const responseTime = Date.now() - startTime;
             const online = (res.statusCode != null) && res.statusCode >= 200 && res.statusCode < 400;
             
-            // Capture success info as stack trace for auditing
-            const stackTrace = `HTTP ${res.statusCode} - Response received in ${responseTime}ms`;
-            resolve({ online, responseTime, statusCode: res.statusCode, stackTrace });
+            let responseBody = '';
+            res.on('data', (chunk) => {
+              responseBody += chunk.toString();
+            });
+
+            res.on('end', () => {
+              const stackTrace = `HTTP ${res.statusCode} - Response received in ${responseTime}ms`;
+              resolve({ online, responseTime, statusCode: res.statusCode, stackTrace, responseBody: responseBody.substring(0, 500) });
+            });
           }
-          res.destroy();
         });
 
         req.on('error', (error) => {
@@ -79,6 +86,7 @@ export class HealthCheckService {
               statusCode: 0,
               errorMessage: error instanceof Error ? error.message : String(error),
               stackTrace: error instanceof Error ? error.stack : String(error),
+              responseBody: error instanceof Error ? error.message : String(error),
             });
           }
         });
@@ -94,6 +102,7 @@ export class HealthCheckService {
             statusCode: 0,
             errorMessage: error instanceof Error ? error.message : String(error),
             stackTrace: error instanceof Error ? error.stack : String(error),
+            responseBody: error instanceof Error ? error.message : String(error),
           });
         }
       }
@@ -117,7 +126,7 @@ export class HealthCheckService {
 
     for (const endpoint of endpoints) {
       try {
-        const { online, responseTime, statusCode, errorMessage, stackTrace } = await this.checkEndpointPromise(endpoint.url, 2000);
+        const { online, responseTime, statusCode, errorMessage, stackTrace, responseBody } = await this.checkEndpointPromise(endpoint.url, 2000);
         const status: 'online' | 'offline' = online ? 'online' : 'offline';
 
         const result: EndpointStatus = {
@@ -129,6 +138,7 @@ export class HealthCheckService {
           statusCode,
           errorMessage,
           stackTrace,
+          responseBody,
           checkedAt: new Date(),
         };
 
@@ -144,6 +154,7 @@ export class HealthCheckService {
           statusCode,
           errorMessage,
           stackTrace,
+          responseBody,
           checkedAt: new Date(),
         });
 
@@ -159,6 +170,7 @@ export class HealthCheckService {
           statusCode: 0,
           errorMessage: error instanceof Error ? error.message : String(error),
           stackTrace: error instanceof Error ? error.stack : String(error),
+          responseBody: error instanceof Error ? error.message : String(error),
           checkedAt: new Date(),
         });
       }
