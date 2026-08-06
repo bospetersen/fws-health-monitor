@@ -43,6 +43,21 @@ export default function ManageEndpointsPage() {
   const [dropPosition, setDropPosition] = createSignal<'above' | 'below' | null>(null);
   const [isReordering, setIsReordering] = createSignal(false);
   const [reorderingGroupId, setReorderingGroupId] = createSignal<string | null>(null);
+  const [collapsedGroups, setCollapsedGroups] = createSignal<Set<string>>(new Set());
+
+  // Toggle group collapsed state
+  const toggleGroupCollapsed = (groupId: string) => {
+    const current = collapsedGroups();
+    const newSet = new Set(current);
+    if (newSet.has(groupId)) {
+      newSet.delete(groupId);
+    } else {
+      newSet.add(groupId);
+    }
+    setCollapsedGroups(newSet);
+  };
+
+  const isGroupCollapsed = (groupId: string) => collapsedGroups().has(groupId);
 
   // New group form
   const [newGroupName, setNewGroupName] = createSignal('');
@@ -522,57 +537,9 @@ export default function ManageEndpointsPage() {
 
         {/* Forms - Only visible in Edit Mode */}
         <Show when={editMode()}>
-          <div class={managementStyles.formSection} style={{ "display": "flex", "gap": "20px", "margin-bottom": "30px" }}>
-            {/* Add Group Form */}
-            <div style={{ "flex": "1" }}>
-              <h2>Add New Group</h2>
-              <form
-                onsubmit={(e) => {
-                  e.preventDefault();
-                  handleAddGroup();
-                }}
-              >
-                <div style={{ "margin-bottom": "12px" }}>
-                  <label style={{ "display": "block", "margin-bottom": "6px", "font-weight": "500" }}>
-                    Group Name
-                  </label>
-                  <input
-                    ref={groupNameInputRef}
-                    type="text"
-                    placeholder="e.g., Login Screens"
-                    style={{
-                      "width": "100%",
-                      "padding": "12px",
-                      "font-size": "16px",
-                      "border": "1px solid #ddd",
-                      "border-radius": "4px",
-                      "box-sizing": "border-box",
-                    }}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={isLoading()}
-                  style={{
-                    "padding": "10px 20px",
-                    "background-color": "#4caf50",
-                    "color": "white",
-                    "border": "none",
-                    "border-radius": "4px",
-                    "font-size": "16px",
-                    "font-weight": "500",
-                    "cursor": "pointer",
-                    "opacity": isLoading() ? 0.6 : 1,
-                  }}
-                >
-                  Create Group
-                </button>
-              </form>
-            </div>
-
+          <div class={managementStyles.formSection} style={{ "margin-bottom": "30px", "max-width": "500px" }}>
             {/* Add Endpoint Form */}
-            <div style={{ "flex": "1" }}>
-              <h2>Add Endpoint</h2>
+            <h2>Add Endpoint</h2>
               <form
                 onsubmit={(e) => {
                   e.preventDefault();
@@ -677,12 +644,61 @@ export default function ManageEndpointsPage() {
                   {checkingHealth() ? 'Adding...' : 'Add Endpoint'}
                 </button>
               </form>
-            </div>
           </div>
         </Show>
 
-        {/* Groups/Endpoints List - Only visible when NOT in Edit Mode */}
-        <Show when={!editMode()}>
+        {/* Groups/Endpoints List */}
+        <div>
+          {/* Add New Group Form - Always visible */}
+          <div class={managementStyles.formSection} style={{ "margin-bottom": "30px", "max-width": "100%", "background-color": "white" }}>
+            <h2>Add New Group</h2>
+            <form
+              onsubmit={(e) => {
+                e.preventDefault();
+                handleAddGroup();
+              }}
+              style={{ "display": "flex", "gap": "12px", "align-items": "flex-end" }}
+            >
+              <div style={{ "flex": "1" }}>
+                <label style={{ "display": "block", "margin-bottom": "6px", "font-weight": "500" }}>
+                  Group Name
+                </label>
+                <input
+                  ref={groupNameInputRef}
+                  type="text"
+                  placeholder="e.g., Login Screens"
+                  style={{
+                    "width": "100%",
+                    "padding": "12px",
+                    "font-size": "16px",
+                    "border": "1px solid #ddd",
+                    "border-radius": "4px",
+                    "box-sizing": "border-box",
+                  }}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading()}
+                style={{
+                  "padding": "12px 20px",
+                  "background-color": "#4caf50",
+                  "color": "white",
+                  "border": "none",
+                  "border-radius": "4px",
+                  "font-size": "16px",
+                  "font-weight": "500",
+                  "cursor": "pointer",
+                  "opacity": isLoading() ? 0.6 : 1,
+                  "white-space": "nowrap",
+                }}
+              >
+                Create Group
+              </button>
+            </form>
+          </div>
+
+          {/* Manage Endpoints Section */}
           <div class={managementStyles.groupsContainer}>
           <Show when={groups().length > 0} fallback={<p>No groups yet. Create one to get started!</p>}>
             <For each={groups()}>
@@ -691,72 +707,76 @@ export default function ManageEndpointsPage() {
 
                 return (
                   <section class={managementStyles.section}>
-                    <div style={{ "display": "flex", "justify-content": "space-between", "align-items": "center", "margin-bottom": "20px" }}>
-                      <h2>{group.name}</h2>
-                      <div style={{ "display": "flex", "gap": "8px" }}>
-                        <Show when={groupIndex() > 0}>
-                          <button
-                            onClick={() => moveGroup(group._id, 'up')}
-                            style={{
-                              "padding": "10px 15px",
-                              "background-color": "#2196F3",
-                              "color": "white",
-                              "border": "none",
-                              "border-radius": "4px",
-                              "font-size": "16px",
-                              "cursor": "pointer",
-                            }}
-                          >
-                            ↑ Move Up
-                          </button>
-                        </Show>
-                        <Show when={groupIndex() < groups().length - 1}>
-                          <button
-                            onClick={() => moveGroup(group._id, 'down')}
-                            style={{
-                              "padding": "10px 15px",
-                              "background-color": "#2196F3",
-                              "color": "white",
-                              "border": "none",
-                              "border-radius": "4px",
-                              "font-size": "16px",
-                              "cursor": "pointer",
-                            }}
-                          >
-                            ↓ Move Down
-                          </button>
-                        </Show>
-                        <button
-                          onClick={() => handleToggleGroup(group._id)}
-                          style={{
-                            "padding": "10px 15px",
-                            "background-color": group.active ? "#4CAF50" : "#ff9800",
-                            "color": "white",
-                            "border": "none",
-                            "border-radius": "4px",
-                            "font-size": "16px",
-                            "cursor": "pointer",
-                          }}
-                        >
-                          {group.active ? '✓ Active' : '✗ Inactive'}
-                        </button>
-                        <button
-                          onClick={() => handleDeleteGroup(group._id)}
-                          style={{
-                            "padding": "10px 15px",
-                            "background-color": "#f44336",
-                            "color": "white",
-                            "border": "none",
-                            "border-radius": "4px",
-                            "font-size": "16px",
-                            "cursor": "pointer",
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
+                    <div style={{ "display": "flex", "align-items": "center", "gap": "10px", "cursor": "pointer", "user-select": "none", "margin-bottom": "20px" }} onClick={() => toggleGroupCollapsed(group._id)}>
+                      <span style={{ "font-size": "20px", "transition": "transform 0.2s", "display": "inline-block", "transform": isGroupCollapsed(group._id) ? "rotate(-90deg)" : "rotate(0deg)" }}>
+                        ▼
+                      </span>
+                      <h2 style={{ "margin": "0", "width": "100%" }}>{group.name}</h2>
                     </div>
 
+                    <Show when={!isGroupCollapsed(group._id)}>
+                      <div style={{ "display": "flex", "gap": "8px", "margin-bottom": "-30px", "justify-content": "flex-end" }}>
+                        <Show when={groupIndex() > 0}>
+                        <button
+                          onClick={() => moveGroup(group._id, 'up')}
+                          style={{
+                            "padding": "5px 10px",
+                            "background-color": "#2196F3",
+                            "color": "white",
+                            "border": "none",
+                            "border-radius": "4px",
+                            "font-size": "18px",
+                            "cursor": "pointer",
+                          }}
+                        >
+                          Up
+                        </button>
+                      </Show>
+                      <Show when={groupIndex() < groups().length - 1}>
+                        <button
+                          onClick={() => moveGroup(group._id, 'down')}
+                          style={{
+                            "padding": "5px 10px",
+                            "background-color": "#2196F3",
+                            "color": "white",
+                            "border": "none",
+                            "border-radius": "4px",
+                            "font-size": "18px",
+                            "cursor": "pointer",
+                          }}
+                        >
+                          Down
+                        </button>
+                      </Show>
+                      <button
+                        onClick={() => handleToggleGroup(group._id)}
+                        style={{
+                          "padding": "5px 10px",
+                          "background-color": group.active ? "#4CAF50" : "#ff9800",
+                          "color": "white",
+                          "border": "none",
+                          "border-radius": "4px",
+                          "font-size": "18px",
+                          "cursor": "pointer",
+                        }}
+                      >
+                        {group.active ? 'Active' : 'Inactive'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteGroup(group._id)}
+                        style={{
+                          "padding": "5px 10px",
+                          "background-color": "#f44336",
+                          "color": "white",
+                          "border": "none",
+                          "border-radius": "4px",
+                          "font-size": "18px",
+                          "cursor": "pointer",
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>                    </Show>
                     <Show when={groupEndpoints().length > 0} fallback={<p style={{ "color": "#999", "font-size": "14px" }}>No endpoints in this group</p>}>
                       <div class={managementStyles.linksTable} style={{ "position": "relative" }}>
                         <Show when={isReordering() && reorderingGroupId() === group._id}>
@@ -931,8 +951,8 @@ export default function ManageEndpointsPage() {
               }}
             </For>
           </Show>
+          </div>
         </div>
-        </Show>
       </div>
     </div>
   );

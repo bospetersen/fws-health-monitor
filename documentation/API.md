@@ -445,24 +445,36 @@ id: string (required) - Endpoint ID to delete
 
 ### PUT /api/endpoints/reorder
 
-Reorder endpoints.
+Reorder endpoints. Used by drag-and-drop reordering on the Manage Endpoints page.
 
 **Request:**
 ```bash
 curl -X PUT http://localhost:3400/api/endpoints/reorder \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{
-    "endpointIds": ["507f1f77bcf86cd799439014", "507f1f77bcf86cd799439015"]
-  }'
+  -d '[
+    {"id": "507f1f77bcf86cd799439014", "sortOrder": 0},
+    {"id": "507f1f77bcf86cd799439015", "sortOrder": 1}
+  ]'
 ```
 
 **Request Body:**
+Array of endpoint reorder objects:
 ```json
-{
-  "endpointIds": ["string (required)"] - Array of endpoint IDs in desired order
-}
+[
+  {
+    "id": "string (required)",      - Endpoint MongoDB _id
+    "sortOrder": "number (required)" - New sort order (0-based, incremental)
+  }
+]
 ```
+
+**Example Flow**:
+1. User drags endpoint from position 2 to position 0 within a group
+2. Frontend recalculates sortOrder for affected endpoints: `[{id: "A", sortOrder: 0}, {id: "B", sortOrder: 1}, {id: "C", sortOrder: 2}]`
+3. Sends PUT request with updated array
+4. Loading spinner displays over the group during the API call
+5. On success, frontend updates endpoint list
 
 **Success Response (200 OK):**
 ```json
@@ -472,12 +484,12 @@ curl -X PUT http://localhost:3400/api/endpoints/reorder \
     {
       "_id": "507f1f77bcf86cd799439014",
       "name": "API Status",
-      "sortOrder": 1
+      "sortOrder": 0
     },
     {
       "_id": "507f1f77bcf86cd799439015",
       "name": "Database Status",
-      "sortOrder": 2
+      "sortOrder": 1
     }
   ]
 }

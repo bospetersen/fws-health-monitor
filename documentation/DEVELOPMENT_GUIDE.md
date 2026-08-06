@@ -314,6 +314,183 @@ return (
 );
 ```
 
+#### Implementing Drag-and-Drop Reordering
+
+The Manage Endpoints page uses HTML5 Drag-and-Drop API with the following pattern:
+
+**State Management:**
+```typescript
+// Track what's being dragged
+const [draggedEndpointId, setDraggedEndpointId] = createSignal<string | null>(null);
+const [draggedGroupId, setDraggedGroupId] = createSignal<string | null>(null);
+const [dragOverEndpointId, setDragOverEndpointId] = createSignal<string | null>(null);
+const [dropPosition, setDropPosition] = createSignal<'above' | 'below' | null>(null);
+const [isReordering, setIsReordering] = createSignal(false);
+const [reorderingGroupId, setReorderingGroupId] = createSignal<string | null>(null);
+```
+
+**Event Handlers:**
+```typescript
+// Step 1: Drag starts - record what's being dragged
+const handleDragStart = (endpoint: Endpoint, event: DragEvent) => {
+  setDraggedEndpointId(endpoint._id);
+  setDraggedGroupId(endpoint.groupId);
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'move';
+  }
+};
+
+// Step 2: Drag over - determine if drop is valid
+const handleDragOver = (event: DragEvent, dropTargetEndpoint: Endpoint) => {
+  event.preventDefault();
+  
+  // Only allow drops within same group
+  if (draggedGroupId() === dropTargetEndpoint.groupId) {
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move'; // Shows move cursor
+    }
+    setDragOverEndpointId(dropTargetEndpoint._id);
+    // dropPosition determined by which row is hovered (above/below)
+  } else {
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'none'; // Shows not-allowed cursor
+    }
+  }
+};
+
+// Step 3: Drag leaves - clear indicators
+const handleDragLeave = () => {
+  setDragOverEndpointId(null);
+  setDropPosition(null);
+};
+
+// Step 4: Drop - reorder and call API
+const handleDrop = async (dropTargetEndpoint: Endpoint, event: DragEvent) => {
+  event.preventDefault();
+  const draggedId = draggedEndpointId();
+  const draggedGroupIdValue = draggedGroupId();
+  
+  // Clear drag state
+  setDraggedEndpointId(null);
+  setDraggedGroupId(null);
+  setDragOverEndpointId(null);
+  
+  // Validate drop
+  if (!draggedId || draggedId === dropTargetEndpoint._id) return;
+  
+  const draggedEndpoint = endpoints().find(e => e._id === draggedId);
+  if (!draggedEndpoint || draggedEndpoint.groupId !== dropTargetEndpoint.groupId) return;
+  
+  // Set loading state
+  setReorderingGroupId(draggedGroupIdValue);
+  setIsReordering(true);
+  
+  // Recalculate order
+  const groupEndpoints = endpoints()
+    .filter(e => e.groupId === dropTargetEndpoint.groupId)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+  
+  // Find indices
+  const draggedIndex = groupEndpoints.findIndex(e => e._id === draggedId);
+  const targetIndex = groupEndpoints.findIndex(e => e._id === dropTargetEndpoint._id);
+  
+  // Build new order (remove and reinsert)
+  const newOrder = [...groupEndpoints];
+  const draggedItem = newOrder[draggedIndex];
+  newOrder.splice(draggedIndex, 1);
+  const newTargetIndex = newOrder.findIndex(e => e._id === dropTargetEndpoint._id);
+  const insertIndex = dropPosition() === 'above' ? newTargetIndex : newTargetIndex + 1;
+  newOrder.splice(insertIndex, 0, draggedItem);
+  
+  // Update sortOrder
+  const updatedEndpoints = newOrder.map((e, i) => ({ ...e, sortOrder: i }));
+  const updates = updatedEndpoints.map(e => ({ id: e._id, sortOrder: e.sortOrder }));
+  
+  try {
+    const response = await fetch('http://localhost:3400/api/endpoints/reorder', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      body: JSON.stringify(updates)
+    });
+    
+    if (response.ok) {
+      setEndpoints([...endpoints().filter(e => e.groupId !== dropTargetEndpoint.groupId), ...updatedEndpoints]);
+    } else {
+      setError('Failed to reorder endpoints');
+    }
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Error reordering');
+  } finally {
+    setIsReordering(false);
+    setReorderingGroupId(null);
+  }
+};
+```
+
+**Template (JSX):**
+```jsx
+// Draggable row
+<tr 
+  draggable="true"
+  onDragStart={(e) => handleDragStart(endpoint, e)}
+  onDragOver={(e) => handleDragOver(e, endpoint)}
+  onDragLeave={handleDragLeave}
+  onDrop={(e) => handleDrop(endpoint, e)}
+  style={{
+    "opacity": draggedEndpointId() === endpoint._id ? "0.5" : "1",
+    "background-color": dragOverEndpointId() === endpoint._id ? "#e3f2fd" : "transparent"
+  }}
+  class={dragOverEndpointId() === endpoint._id && dropPosition() === 'above' ? styles.dropAbove : ''}
+>
+  {/* row content */}
+</tr>
+
+// Loading indicator
+<Show when={isReordering() && reorderingGroupId() === group._id}>
+  <div class={styles.loadingOverlay}>
+    <div class={styles.spinner}></div>
+    <p>Sorting...</p>
+  </div>
+</Show>
+```
+
+**CSS for Indicators:**
+```css
+.dropAbove {
+  box-shadow: inset 0 3px 0 0 black;
+}
+
+.dropBelow {
+  box-shadow: inset 0 -4px 0 0 black;
+}
+
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+```
+
+**Key Patterns:**
+- Use separate signals for drag state, drop target, and position
+- Record `draggedGroupId` at start to prevent cross-group moves
+- Use `dropEffect` to show appropriate cursor (move vs not-allowed)
+- Clear all drag state in `handleDrop` immediately
+- Use separate `reorderingGroupId` signal for loading state (cleared state won't break condition)
+- Always validate drops before reordering
+- Call API with `{id, sortOrder}` array, not just IDs
+- Update frontend state only after successful API response
+
 ### Testing Frontend
 
 ```bash

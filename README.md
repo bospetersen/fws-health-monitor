@@ -16,6 +16,7 @@ Comprehensive health monitoring service for FWS infrastructure with real-time da
 - 📊 Live health status dashboard with green/red status badges
 - 🎯 Endpoint grouping and organization
 - 🔄 Manual refresh and auto-refresh every 5 minutes
+- 🎯 **Drag-and-drop endpoint reordering within groups** (visual insertion indicators)
 - 🔐 JWT authentication with secure session management
 - 📱 Responsive full-width layout
 - 🎨 Clean, modern UI with Solid.js

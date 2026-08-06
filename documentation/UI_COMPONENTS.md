@@ -165,7 +165,7 @@ const [healthStatus, setHealthStatus] = createSignal<Record<string, string>>({})
 
 ### ManageEndpointsPage.tsx
 
-**Purpose**: CRUD interface for endpoint groups and endpoints
+**Purpose**: CRUD interface for endpoint groups and endpoints with drag-and-drop reordering
 
 **Location**: `src/components/pages/ManageEndpointsPage.tsx`
 
@@ -174,7 +174,8 @@ const [healthStatus, setHealthStatus] = createSignal<Record<string, string>>({})
 - Create new groups
 - Create endpoints in groups
 - Delete groups and endpoints
-- Reorder groups and endpoints
+- **Drag-and-drop reordering within groups**
+- Reorder groups and endpoints via buttons
 - Toggle group active status
 - Edit mode toggle
 
@@ -186,6 +187,15 @@ const [groups, setGroups] = createSignal<EndpointGroup[]>([]);
 const [endpoints, setEndpoints] = createSignal<Endpoint[]>([]);
 const [selectedGroupId, setSelectedGroupId] = createSignal<string | null>(null);
 const [error, setError] = createSignal<string | null>(null);
+
+// Drag-and-drop signals
+const [draggedEndpointId, setDraggedEndpointId] = createSignal<string | null>(null);
+const [draggedGroupId, setDraggedGroupId] = createSignal<string | null>(null);
+const [dragOverEndpointId, setDragOverEndpointId] = createSignal<string | null>(null);
+const [dropPosition, setDropPosition] = createSignal<'above' | 'below' | null>(null);
+const [isReordering, setIsReordering] = createSignal(false);
+const [reorderingGroupId, setReorderingGroupId] = createSignal<string | null>(null);
+const [hoveredEndpointId, setHoveredEndpointId] = createSignal<string | null>(null);
 
 // Input refs (uncontrolled)
 let groupNameInputRef: HTMLInputElement | undefined;
@@ -214,11 +224,46 @@ Edit Mode Button    Logout Button
 │
 └─ Groups List (view mode)
    ├─ Production APIs
-   │  ├─ Endpoint 1 (name, URL, actions)
-   │  └─ Endpoint 2
+   │  ├─ ↕ Name | Description | Actions  ← Drag-and-drop enabled
+   │  │  ├─ URL
+   │  │  ├─ Endpoint 1 (draggable, shows insertion line on hover)
+   │  │  └─ Endpoint 2 (draggable, shows insertion line on hover)
+   │  │
+   │  └─ [Loading spinner appears during reorder]
    │
    └─ Staging APIs
       └─ Endpoint 3
+```
+
+**Drag-and-Drop Reordering**:
+
+**Features**:
+- Drag endpoints within the same group to reorder
+- Shows insertion line (black 4px line above/below) when hovering over drop target
+- Loading spinner displays over the active group during API call
+- Cross-group drags show "not-allowed" cursor
+- Endpoints remain within their group (no cross-group moves)
+- Expansion icon (↕) with tooltip "Drag rows to reorder" in Name column header
+
+**How It Works**:
+```
+User hovers over endpoint row
+├─ Blue highlight shows it's a valid drop target
+└─ Insertion line appears (above/below based on row)
+
+User drags endpoint from Row A to Row B
+├─ Dragged item becomes semi-transparent (50% opacity)
+├─ handleDragStart: Records draggedEndpointId and draggedGroupId
+├─ handleDragOver: 
+│  ├─ If same group: dropEffect='move', shows insertion line
+│  └─ If different group: dropEffect='none', cursor shows "not-allowed"
+├─ handleDrop:
+│  ├─ Removes endpoint from original position
+│  ├─ Inserts at new position (above/below target)
+│  ├─ Updates sortOrder for all endpoints in group
+│  ├─ Shows loading spinner
+│  └─ Calls PUT /api/endpoints/reorder API
+└─ Loading spinner disappears on success/error
 ```
 
 **Key Methods**:
@@ -227,15 +272,28 @@ Edit Mode Button    Logout Button
 - `handleAddGroup()` - POST new group
 - `handleToggleGroup(id)` - Toggle active status
 - `handleDeleteGroup(id)` - Delete group
-- `moveGroup(id, direction)` - Reorder groups
+- `moveGroup(id, direction)` - Reorder groups via button
 
 **Endpoint Management**:
 - `handleAddEndpoint()` - POST new endpoint
 - `handleDeleteEndpoint(id)` - Delete endpoint
-- `moveEndpoint(id, direction)` - Reorder endpoint
+- `moveEndpoint(id, direction)` - Reorder endpoint via button (deprecated in favor of drag-and-drop)
+
+**Drag-and-Drop Handlers**:
+- `handleDragStart(endpoint, event)` - Records dragged endpoint and its group
+- `handleDragOver(event)` - Prevents default, sets dropEffect, determines drop position
+- `handleDragLeave()` - Clears drag indicators when leaving endpoint row
+- `handleDrop(endpoint, event)` - Processes reorder, calls API, updates state
 
 **Form Handling**:
 - `clearForm()` - Reset all input refs
+
+**Styling**:
+- `.dropAbove` - Black 3px line at top of row (CSS: `box-shadow: inset 0 3px 0 0 black`)
+- `.dropBelow` - Black 4px line at bottom of row (CSS: `box-shadow: inset 0 -4px 0 0 black`)
+- Blue highlight on hover: `background-color: #e3f2fd`
+- Dragged row: 50% opacity
+- Drag icon: Expansion arrows (↕) 20x20px, appears in header with tooltip
 
 **Event Handlers**:
 
@@ -249,16 +307,25 @@ Edit Mode Button    Logout Button
   <button type="submit">Create Group</button>
 </form>
 
-// Group Selector - Select element
-<select 
-  value={selectedGroupId() || ''} 
-  onchange={(e) => setSelectedGroupId(e.currentTarget.value || null)}
+// Drag-enabled endpoint row
+<tr 
+  draggable="true"
+  onDragStart={(e) => handleDragStart(endpoint, e)}
+  onDragOver={(e) => {
+    e.preventDefault();
+    if (draggedGroupId() === endpoint.groupId) {
+      e.dataTransfer.dropEffect = 'move';
+      setDragOverEndpointId(endpoint._id);
+      setDropPosition('above');
+    } else {
+      e.dataTransfer.dropEffect = 'none';
+    }
+  }}
+  onDragLeave={handleDragLeave}
+  onDrop={(e) => handleDrop(endpoint, e)}
 >
-  <option value="">-- Select a group --</option>
-  <For each={groups()}>
-    {(group) => <option value={group._id}>{group.name}</option>}
-  </For>
-</select>
+  {/* Row content */}
+</tr>
 
 // Create Endpoint - Form pattern
 <form onsubmit={(e) => {
