@@ -4,7 +4,7 @@
  * Integrated with Health Monitor API
  */
 
-import { createSignal, createEffect, createMemo, For, onCleanup } from 'solid-js';
+import { createSignal, createEffect, createMemo, For, Show, onCleanup } from 'solid-js';
 import { useNavigate } from '@solidjs/router';
 import { useAuth, getAuthToken } from '../../services/authService';
 import styles from './pageLayout.module.css';
@@ -36,6 +36,7 @@ interface EndpointStatus {
   responseTime?: number;
   statusCode?: number;
   errorMessage?: string;
+  stackTrace?: string;
   checkedAt: Date;
 }
 
@@ -45,6 +46,7 @@ export default function HealthStatusPage() {
   
   const [copiedUrl, setCopiedUrl] = createSignal<string | null>(null);
   const [hoveredEndpointId, setHoveredEndpointId] = createSignal<string | null>(null);
+  const [expandedEndpoints, setExpandedEndpoints] = createSignal<Set<string>>(new Set());
   const [endpointStatus, setEndpointStatus] = createSignal<Record<string, EndpointStatus>>({});
   const [isLoading, setIsLoading] = createSignal(false);
   const [groups, setGroups] = createSignal<EndpointGroup[]>([]);
@@ -122,6 +124,20 @@ export default function HealthStatusPage() {
 
   const getStatusForEndpoint = (endpointId: string) => {
     return endpointStatus()[endpointId];
+  };
+
+  const toggleExpanded = (endpointId: string) => {
+    const newExpanded = new Set(expandedEndpoints());
+    if (newExpanded.has(endpointId)) {
+      newExpanded.delete(endpointId);
+    } else {
+      newExpanded.add(endpointId);
+    }
+    setExpandedEndpoints(newExpanded);
+  };
+
+  const isExpanded = (endpointId: string) => {
+    return expandedEndpoints().has(endpointId);
   };
 
   const getGroupEndpoints = (groupId: string) => {
@@ -294,14 +310,69 @@ export default function HealthStatusPage() {
                                 >
                                   <td></td>
                                   <td colSpan={2}>
-                                    <a 
-                                      class={styles.urlCode}
-                                      href={endpoint.url.startsWith('http') ? endpoint.url : 'http://' + endpoint.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      🔗 {endpoint.url}
-                                    </a>
+                                    <div style={{"display": "flex", "align-items": "flex-start", "gap": "8px"}}>
+                                      <span 
+                                        style={{
+                                          "cursor": "pointer", 
+                                          "font-size": "20px", 
+                                          "color": "#2196F3",
+                                          "user-select": "none", 
+                                          "transform": isExpanded(endpoint._id) ? "rotate(90deg)" : "rotate(0deg)", 
+                                          "transition": "transform 0.2s", 
+                                          "display": "inline-block",
+                                          "line-height": "1",
+                                          "flex-shrink": "0"
+                                        }}
+                                        onClick={() => toggleExpanded(endpoint._id)}
+                                      >
+                                        ▶
+                                      </span>
+                                      <div style={{"flex": "1"}}>
+                                        <a 
+                                          class={styles.urlCode}
+                                          href={endpoint.url.startsWith('http') ? endpoint.url : 'http://' + endpoint.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          🔗 {endpoint.url}
+                                        </a>
+                                        <Show when={isExpanded(endpoint._id)}>
+                                          <div style={{"margin-top": "12px", "padding": "10px", "background-color": status()?.status === 'offline' ? "#ffebee" : "#e8f5e9", "border-radius": "4px", "border-left": `3px solid ${status()?.status === 'offline' ? '#f44336' : '#4caf50'}`, "font-size": "16px"}}>
+                                            {status()?.status === 'offline' ? (
+                                              <>
+                                                {status()?.errorMessage && (
+                                                  <div style={{"margin-bottom": "8px"}}>
+                                                    <strong style={{"color": "#d32f2f"}}>Error:</strong> {status()?.errorMessage}
+                                                  </div>
+                                                )}
+                                                {status()?.statusCode && (
+                                                  <div style={{"margin-bottom": "6px"}}>
+                                                    <strong>Status Code:</strong> {status()?.statusCode}
+                                                  </div>
+                                                )}
+                                              </>
+                                            ) : (
+                                              <div style={{"margin-bottom": "8px"}}>
+                                                <strong style={{"color": "#2e7d32"}}>✓ Endpoint Online</strong>
+                                              </div>
+                                            )}
+                                            {status()?.responseTime !== undefined && (
+                                              <div style={{"margin-bottom": "6px"}}>
+                                                <strong>Response Time:</strong> {status()?.responseTime}ms
+                                              </div>
+                                            )}
+                                            {status()?.stackTrace && (
+                                              <div style={{"margin-top": "8px"}}>
+                                                <strong style={{"display": "block", "margin-bottom": "4px"}}>Stack Trace:</strong>
+                                                <pre style={{"background-color": "#f5f5f5", "padding": "8px", "border-radius": "4px", "overflow-x": "auto", "font-size": "16px", "color": "#333", "margin": "0", "white-space": "pre-wrap", "word-break": "break-word", "line-height": "1.4"}}>
+{status()?.stackTrace}
+                                                </pre>
+                                              </div>
+                                            )}
+                                          </div>
+                                        </Show>
+                                      </div>
+                                    </div>
                                   </td>
                                   <td></td>
                                 </tr>

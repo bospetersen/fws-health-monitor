@@ -15,6 +15,7 @@ export interface EndpointStatus {
   responseTime?: number;
   statusCode?: number;
   errorMessage?: string;
+  stackTrace?: string;
   checkedAt: Date;
 }
 
@@ -31,7 +32,7 @@ export class HealthCheckService {
   private checkEndpointPromise(
     url: string,
     timeout: number = 3000,
-  ): Promise<{ online: boolean; responseTime: number; statusCode?: number; errorMessage?: string }> {
+  ): Promise<{ online: boolean; responseTime: number; statusCode?: number; errorMessage?: string; stackTrace?: string }> {
     return new Promise((resolve) => {
       const startTime = Date.now();
       let completed = false;
@@ -39,7 +40,13 @@ export class HealthCheckService {
       const timeoutHandle = setTimeout(() => {
         if (!completed) {
           completed = true;
-          resolve({ online: false, responseTime: timeout, statusCode: 0, errorMessage: 'Timeout' });
+          resolve({ 
+            online: false, 
+            responseTime: timeout, 
+            statusCode: 0, 
+            errorMessage: 'Timeout', 
+            stackTrace: 'Request timed out after ' + timeout + 'ms'
+          });
         }
       }, timeout);
 
@@ -53,7 +60,10 @@ export class HealthCheckService {
             clearTimeout(timeoutHandle);
             const responseTime = Date.now() - startTime;
             const online = (res.statusCode != null) && res.statusCode >= 200 && res.statusCode < 400;
-            resolve({ online, responseTime, statusCode: res.statusCode });
+            
+            // Capture success info as stack trace for auditing
+            const stackTrace = `HTTP ${res.statusCode} - Response received in ${responseTime}ms`;
+            resolve({ online, responseTime, statusCode: res.statusCode, stackTrace });
           }
           res.destroy();
         });
@@ -68,6 +78,7 @@ export class HealthCheckService {
               responseTime,
               statusCode: 0,
               errorMessage: error instanceof Error ? error.message : String(error),
+              stackTrace: error instanceof Error ? error.stack : String(error),
             });
           }
         });
@@ -82,6 +93,7 @@ export class HealthCheckService {
             responseTime: Date.now() - startTime,
             statusCode: 0,
             errorMessage: error instanceof Error ? error.message : String(error),
+            stackTrace: error instanceof Error ? error.stack : String(error),
           });
         }
       }
@@ -105,7 +117,7 @@ export class HealthCheckService {
 
     for (const endpoint of endpoints) {
       try {
-        const { online, responseTime, statusCode, errorMessage } = await this.checkEndpointPromise(endpoint.url, 2000);
+        const { online, responseTime, statusCode, errorMessage, stackTrace } = await this.checkEndpointPromise(endpoint.url, 2000);
         const status: 'online' | 'offline' = online ? 'online' : 'offline';
 
         const result: EndpointStatus = {
@@ -116,6 +128,7 @@ export class HealthCheckService {
           responseTime,
           statusCode,
           errorMessage,
+          stackTrace,
           checkedAt: new Date(),
         };
 
@@ -130,6 +143,7 @@ export class HealthCheckService {
           responseTime,
           statusCode,
           errorMessage,
+          stackTrace,
           checkedAt: new Date(),
         });
 
@@ -144,6 +158,7 @@ export class HealthCheckService {
           responseTime: 0,
           statusCode: 0,
           errorMessage: error instanceof Error ? error.message : String(error),
+          stackTrace: error instanceof Error ? error.stack : String(error),
           checkedAt: new Date(),
         });
       }
