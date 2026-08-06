@@ -7,6 +7,7 @@
 import { createSignal, createEffect, createMemo, For, Show, onCleanup } from 'solid-js';
 import { useNavigate, A } from '@solidjs/router';
 import { useAuth, getAuthToken } from '../../services/authService';
+import { MonitorMenu } from './MonitorMenu';
 import styles from './pageLayout.module.css';
 
 interface EndpointGroup {
@@ -217,6 +218,11 @@ export default function HealthStatusPage() {
           </div>
         </div>
       </header>
+
+      <MonitorMenu links={[
+        { label: 'API Endpoints', href: 'http://localhost:3401/system/health', icon: '🌐', external: true },
+        { label: 'SSL Certificates', href: '/system/ssl-certificates', icon: '🔒', external: false }
+      ]} />
 
       <main class={styles.pageContent}>
         {/* Health Check Controls */}
