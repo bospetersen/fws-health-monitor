@@ -340,7 +340,7 @@ export default function HealthStatusPage() {
                                           🔗 {endpoint.url}
                                         </a>
                                         <Show when={isExpanded(endpoint._id)}>
-                                          <div style={{"margin-top": "12px", "padding": "10px", "background-color": status()?.status === 'offline' ? "#ffebee" : "#e8f5e9", "border-radius": "4px", "border-left": `3px solid ${status()?.status === 'offline' ? '#f44336' : '#4caf50'}`, "font-size": "16px"}}>
+                                          <div style={{"margin-top": "12px", "margin-bottom": "10px", "margin-left": "-20px", "padding": "10px", "background-color": status()?.status === 'offline' ? "#ffebee" : "#e8f5e9", "border-radius": "4px", "border-left": `3px solid ${status()?.status === 'offline' ? '#f44336' : '#4caf50'}`, "font-size": "16px"}}>
                                             {status()?.status === 'offline' ? (
                                               <>
                                                 {status()?.errorMessage && (
