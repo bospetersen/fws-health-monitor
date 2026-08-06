@@ -72,7 +72,7 @@ export class EndpointsController {
   @ApiOperation({ summary: 'Get all monitored endpoints' })
   @ApiResponse({ status: 200, description: 'List of all endpoints' })
   async getAllEndpoints() {
-    return this.endpointModel.find();
+    return this.endpointModel.find().sort({ sortOrder: 1 }).exec();
   }
 
   @Get(':id')
@@ -86,8 +86,31 @@ export class EndpointsController {
   @ApiOperation({ summary: 'Add new endpoint to monitor' })
   @ApiResponse({ status: 201, description: 'Endpoint created' })
   async createEndpoint(@Body() createEndpointDto: CreateEndpointDto) {
-    const endpoint = new this.endpointModel(createEndpointDto);
+    // Calculate next sortOrder for this group
+    const lastEndpoint = await this.endpointModel
+      .findOne({ groupId: createEndpointDto.groupId })
+      .sort({ sortOrder: -1 })
+      .exec();
+    
+    const nextSortOrder = lastEndpoint ? lastEndpoint.sortOrder + 1 : 0;
+    
+    const endpoint = new this.endpointModel({
+      ...createEndpointDto,
+      sortOrder: nextSortOrder,
+    });
     return endpoint.save();
+  }
+
+  @Put('reorder')
+  @ApiOperation({ summary: 'Reorder endpoints in bulk' })
+  @ApiResponse({ status: 200, description: 'Endpoints reordered' })
+  async reorderEndpoints(@Body() endpoints: { id: string; sortOrder: number }[]) {
+    const updated = await Promise.all(
+      endpoints.map((endpoint) =>
+        this.endpointModel.findByIdAndUpdate(endpoint.id, { sortOrder: endpoint.sortOrder }, { new: true }).exec(),
+      ),
+    );
+    return updated;
   }
 
   @Put(':id')
@@ -102,18 +125,6 @@ export class EndpointsController {
   @ApiResponse({ status: 200, description: 'Endpoint deleted' })
   async deleteEndpoint(@Param('id') id: string) {
     return this.endpointModel.findByIdAndDelete(id);
-  }
-
-  @Put(':id/reorder')
-  @ApiOperation({ summary: 'Reorder endpoints' })
-  @ApiResponse({ status: 200, description: 'Endpoints reordered' })
-  async reorderEndpoints(@Body() endpoints: { id: string; sortOrder: number }[]) {
-    const updated = await Promise.all(
-      endpoints.map((endpoint) =>
-        this.endpointModel.findByIdAndUpdate(endpoint.id, { sortOrder: endpoint.sortOrder }, { new: true }).exec(),
-      ),
-    );
-    return updated;
   }
 }
 

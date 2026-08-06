@@ -1,4 +1,5 @@
 import { createSignal, createEffect, For, Show, onCleanup } from 'solid-js';
+import { useNavigate, A } from '@solidjs/router';
 import { useAuth, getAuthToken } from '../../services/authService';
 import styles from './pageLayout.module.css';
 import managementStyles from './management.module.css';
@@ -36,6 +37,10 @@ export default function ManageEndpointsPage() {
   const [error, setError] = createSignal<string | null>(null);
   const [copiedUrl, setCopiedUrl] = createSignal<string | null>(null);
   const [hoveredEndpointId, setHoveredEndpointId] = createSignal<string | null>(null);
+  const [draggedEndpointId, setDraggedEndpointId] = createSignal<string | null>(null);
+  const [dragOverEndpointId, setDragOverEndpointId] = createSignal<string | null>(null);
+  const [dropPosition, setDropPosition] = createSignal<'above' | 'below' | null>(null);
+  const [isReordering, setIsReordering] = createSignal(false);
 
   // New group form
   const [newGroupName, setNewGroupName] = createSignal('');
@@ -310,6 +315,119 @@ export default function ManageEndpointsPage() {
     setTimeout(() => setCopiedUrl(null), 2000);
   };
 
+  // Drag and drop handlers
+  const handleDragStart = (endpoint: Endpoint, event: DragEvent) => {
+    setDraggedEndpointId(endpoint._id);
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', endpoint._id);
+    }
+  };
+
+  const handleDragOver = (event: DragEvent) => {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  };
+
+  const handleDragLeave = () => {
+    setDragOverEndpointId(null);
+    setDropPosition(null);
+  };
+
+  const handleDrop = async (dropTargetEndpoint: Endpoint, event: DragEvent) => {
+    event.preventDefault();
+    const draggedId = draggedEndpointId();
+    setDraggedEndpointId(null);
+    setDragOverEndpointId(null);
+
+    if (!draggedId || draggedId === dropTargetEndpoint._id) return;
+
+    // Find both endpoints
+    const draggedEndpoint = endpoints().find((e) => e._id === draggedId);
+    if (!draggedEndpoint || draggedEndpoint.groupId !== dropTargetEndpoint.groupId) return;
+
+    setIsReordering(true);
+
+    // Reorder using existing moveEndpoint logic
+    const groupEndpoints = endpoints()
+      .filter((e) => e.groupId === dropTargetEndpoint.groupId)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+
+    const draggedIndex = groupEndpoints.findIndex((e) => e._id === draggedId);
+    const targetIndex = groupEndpoints.findIndex((e) => e._id === dropTargetEndpoint._id);
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setIsReordering(false);
+      return;
+    }
+
+    // Determine insert position based on dropPosition
+    const position = dropPosition();
+    setDropPosition(null);
+    
+    // Create new order by removing dragged item and inserting at correct position
+    const newGroupEndpoints = [...groupEndpoints];
+    const draggedItem = newGroupEndpoints[draggedIndex];
+    
+    // Remove dragged item from array
+    newGroupEndpoints.splice(draggedIndex, 1);
+    
+    // Find the target index after removal
+    const newTargetIndex = newGroupEndpoints.findIndex((e) => e._id === dropTargetEndpoint._id);
+    
+    // Insert dragged item before or after target based on position
+    const insertIndex = position === 'above' ? newTargetIndex : newTargetIndex + 1;
+    newGroupEndpoints.splice(insertIndex, 0, draggedItem);
+
+    // Update sortOrder in endpoint objects
+    const updatedGroupEndpoints = newGroupEndpoints.map((e, i) => ({
+      ...e,
+      sortOrder: i,
+    }));
+
+    // Prepare updates for API
+    const updates = updatedGroupEndpoints.map((e) => ({ id: e._id, sortOrder: e.sortOrder }));
+    const otherEndpoints = endpoints().filter((e) => e.groupId !== dropTargetEndpoint.groupId);
+
+    console.log('Sending reorder request with updates:', updates);
+
+    try {
+      const token = getAuthToken();
+      console.log('Token present before reorder:', !!token);
+      const response = await fetch('http://localhost:3400/api/endpoints/reorder', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify(updates),
+      });
+
+      console.log('Reorder response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Reorder failed:', errorText);
+        setError(`Failed to reorder: ${response.status}`);
+        setIsReordering(false);
+        return;
+      }
+
+      const result = await response.json();
+      console.log('Reorder result:', result);
+
+      setEndpoints([...otherEndpoints, ...updatedGroupEndpoints]);
+      setIsReordering(false);
+    } catch (err) {
+      console.error('Reorder error:', err);
+      setError(err instanceof Error ? err.message : 'Error reordering endpoints');
+      setIsReordering(false);
+    }
+  };
+
   const clearEndpointForm = () => {
     if (nameInputRef) nameInputRef.value = '';
     if (urlInputRef) urlInputRef.value = '';
@@ -319,12 +437,55 @@ export default function ManageEndpointsPage() {
 
   return (
     <div class={styles.pageContainer}>
-      <header class={styles.pageHeader} style={{ "display": "flex", "justify-content": "space-between", "align-items": "center" }}>
-        <div>
-          <h1>Manage Endpoints</h1>
-          <p>Organize and configure endpoints for health monitoring</p>
+      <header class={styles.pageHeader} style={{ "display": "grid", "grid-template-columns": "auto 1fr", "gap": "40px", "align-items": "center", "padding": "0px 0 20px 0" }}>
+        {/* Left Column: Title and Subtitle */}
+        <div style={{ "text-align": "left" }}>
+          <h1 style={{ "margin": "0 0 8px 0", "font-size": "28px" }}>Manage Endpoints</h1>
+          <p style={{ "margin": "0", "font-size": "16px", "color": "#666" }}>Organize and configure endpoints for health monitoring</p>
         </div>
-        <div style={{ "display": "flex", "gap": "10px", "align-items": "center" }}>
+
+        {/* Right Column: User Info and Buttons */}
+        <div style={{ "display": "flex", "flex-direction": "column", "align-items": "flex-end", "gap": "12px" }}>
+          <span style={{ "font-size": "18px", "color": "#333" }}>
+            <strong>{auth.user()?.name}</strong> - {auth.user()?.email}
+          </span>
+          <div style={{ "display": "flex", "gap": "10px" }}>
+            <A href="/system/health" style={{ "padding": "8px 16px", "color": "#2196F3", "text-decoration": "none", "font-size": "14px", "cursor": "pointer" }}>Back to Health Status</A>
+            <form
+              onsubmit={(e) => {
+                e.preventDefault();
+                handleLogout();
+              }}
+              style={{ display: 'inline' }}
+            >
+              <button
+                type="submit"
+                style={{
+                  "padding": "8px 16px",
+                  "background-color": "#f44336",
+                  "color": "white",
+                  "border": "none",
+                  "border-radius": "4px",
+                  "font-size": "14px",
+                  "cursor": "pointer",
+                }}
+              >
+                Logout
+              </button>
+            </form>
+          </div>
+        </div>
+      </header>
+
+      <div class={managementStyles.contentArea}>
+        <Show when={error()}>
+          <div class={managementStyles.errorBox}>
+            <strong>Error:</strong> {error()}
+          </div>
+        </Show>
+
+        <div style={{"display": "flex", "justify-content": "space-between", "align-items": "center", "margin-bottom": "20px"}}>
+          <h2 style={{"margin": "0"}}>Groups</h2>
           <form
             onsubmit={(e) => {
               e.preventDefault();
@@ -347,37 +508,7 @@ export default function ManageEndpointsPage() {
               {editMode() ? 'Exit Edit Mode' : 'Edit Mode'}
             </button>
           </form>
-          <form
-            onsubmit={(e) => {
-              e.preventDefault();
-              handleLogout();
-            }}
-            style={{ display: 'inline' }}
-          >
-            <button
-              type="submit"
-              style={{
-                "padding": "8px 16px",
-                "background-color": "#f44336",
-                "color": "white",
-                "border": "none",
-                "border-radius": "4px",
-                "font-size": "14px",
-                "cursor": "pointer",
-              }}
-            >
-              Logout
-            </button>
-          </form>
         </div>
-      </header>
-
-      <div class={managementStyles.contentArea}>
-        <Show when={error()}>
-          <div class={managementStyles.errorBox}>
-            <strong>Error:</strong> {error()}
-          </div>
-        </Show>
 
         {/* Forms - Only visible in Edit Mode */}
         <Show when={editMode()}>
@@ -617,11 +748,19 @@ export default function ManageEndpointsPage() {
                     </div>
 
                     <Show when={groupEndpoints().length > 0} fallback={<p style={{ "color": "#999", "font-size": "14px" }}>No endpoints in this group</p>}>
-                      <div class={managementStyles.linksTable}>
+                      <div class={managementStyles.linksTable} style={{ "position": "relative" }}>
+                        <Show when={isReordering()}>
+                          <div class={managementStyles.loadingOverlay}>
+                            <div class={managementStyles.spinnerContainer}>
+                              <div class={managementStyles.spinner}></div>
+                              <p class={managementStyles.spinnerText}>Sorting...</p>
+                            </div>
+                          </div>
+                        </Show>
                         <table>
                           <thead>
                             <tr>
-                              <th style={{"width": "300px"}}>Name</th>
+                              <th style={{"width": "300px", "padding-left": "10px"}}>Name</th>
                               <th>Description</th>
                               <th>Actions</th>
                             </tr>
@@ -631,11 +770,26 @@ export default function ManageEndpointsPage() {
                               {(endpoint, epIndex) => (
                                 <>
                                   <tr 
-                                    class={hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''}
+                                    draggable="true"
+                                    onDragStart={(e) => handleDragStart(endpoint, e)}
+                                    onDragOver={(e) => {
+                                      handleDragOver(e);
+                                      setDragOverEndpointId(endpoint._id);
+                                      setDropPosition('above');
+                                    }}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => handleDrop(endpoint, e)}
+                                    class={`${hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''} ${draggedEndpointId() === endpoint._id ? managementStyles.rowDragging : ''} ${dragOverEndpointId() === endpoint._id ? managementStyles.rowDragOver : ''} ${dragOverEndpointId() === endpoint._id && dropPosition() === 'above' ? managementStyles.dropAbove : ''}`}
+                                    style={{
+                                      "cursor": "grab",
+                                      "opacity": draggedEndpointId() === endpoint._id ? "0.5" : "1",
+                                      "background-color": dragOverEndpointId() === endpoint._id ? "#e3f2fd" : "transparent",
+                                      "transition": "all 0.2s ease",
+                                    }}
                                     onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
                                     onMouseLeave={() => setHoveredEndpointId(null)}
                                   >
-                                    <td>
+                                    <td style={{"padding-left": "10px"}}>
                                       <span class={managementStyles.linkName}>{endpoint.name}</span>
                                     </td>
                                     <td>
@@ -695,8 +849,24 @@ export default function ManageEndpointsPage() {
                                       </button>
                                     </td>
                                   </tr>
-                                  <tr class={hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''}
-                                    style={{"border-bottom": "1px solid #e8e8e8"}}
+                                  <tr 
+                                    draggable="true"
+                                    onDragStart={(e) => handleDragStart(endpoint, e)}
+                                    onDragOver={(e) => {
+                                      handleDragOver(e);
+                                      setDragOverEndpointId(endpoint._id);
+                                      setDropPosition('below');
+                                    }}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => handleDrop(endpoint, e)}
+                                    class={`${dragOverEndpointId() === endpoint._id && dropPosition() === 'below' ? managementStyles.dropBelow : ''}`}
+                                    style={{
+                                      "border-bottom": "1px solid #e8e8e8",
+                                      "cursor": "grab",
+                                      "opacity": draggedEndpointId() === endpoint._id ? "0.5" : "1",
+                                      "background-color": dragOverEndpointId() === endpoint._id ? "#e3f2fd" : "transparent",
+                                      "transition": "all 0.2s ease",
+                                    }}
                                     onMouseEnter={() => setHoveredEndpointId(endpoint._id)}
                                     onMouseLeave={() => setHoveredEndpointId(null)}
                                   >

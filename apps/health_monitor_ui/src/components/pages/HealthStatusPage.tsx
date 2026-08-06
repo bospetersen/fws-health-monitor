@@ -5,7 +5,7 @@
  */
 
 import { createSignal, createEffect, createMemo, For, Show, onCleanup } from 'solid-js';
-import { useNavigate } from '@solidjs/router';
+import { useNavigate, A } from '@solidjs/router';
 import { useAuth, getAuthToken } from '../../services/authService';
 import styles from './pageLayout.module.css';
 
@@ -70,12 +70,18 @@ export default function HealthStatusPage() {
 
       if (groupRes.ok) {
         const groupData = await groupRes.json();
+        console.log('Loaded groups:', groupData);
         setGroups(groupData);
+      } else {
+        console.error('Group fetch failed:', groupRes.status);
       }
 
       if (endpointRes.ok) {
         const endpointData = await endpointRes.json();
+        console.log('Loaded endpoints:', endpointData);
         setEndpoints(endpointData);
+      } else {
+        console.error('Endpoint fetch failed:', endpointRes.status);
       }
     } catch (error) {
       console.error('Failed to load endpoints:', error);
@@ -112,6 +118,7 @@ export default function HealthStatusPage() {
 
   // Load endpoints and start health checks
   createEffect(() => {
+    console.log('HealthStatusPage effect running');
     loadData();
     checkEndpointHealth();
 
@@ -216,29 +223,9 @@ export default function HealthStatusPage() {
         <section class={styles.section}>
           <div style={{"display": "flex", "justify-content": "space-between", "align-items": "center", "padding-bottom": "8px", "border-bottom": "1px solid #ddd"}}>
             <h2 style={{"margin": "0", "text-decoration": "none", "border": "none"}}>🔍 System Status</h2>
-            <form onsubmit={(e) => {
-              e.preventDefault();
-              window.location.href = '/system/manage-endpoints';
-            }} style={{ "display": "inline", "margin-top": "-20px" }}>
-              <button
-                type="submit"
-                style={{
-                  "padding": "8px 16px",
-                  "background-color": "#2196F3",
-                  "color": "white",
-                  "border": "none",
-                  "border-radius": "4px",
-                  "font-size": "14px",
-                  "cursor": "pointer",
-                  "transition": "background-color 0.2s",
-                  "margin": "0"
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#1976D2")}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#2196F3")}
-              >
-                Manage Endpoints
-              </button>
-            </form>
+            <A href="/system/manage-endpoints" style={{ "padding": "8px 16px", "background-color": "#2196F3", "color": "white", "text-decoration": "none", "border": "none", "border-radius": "4px", "font-size": "14px", "cursor": "pointer", "display": "inline-block", "transition": "background-color 0.2s" }}>
+              Manage Endpoints
+            </A>
           </div>
           <div style={{"display": "flex", "align-items": "center", "gap": "20px", "padding-top": "12px", "padding-bottom": "0"}}>
             <button
