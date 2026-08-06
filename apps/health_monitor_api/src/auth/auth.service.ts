@@ -38,6 +38,7 @@ export class AuthService {
       {
         userId: user._id.toString(),
         email: user.email,
+        name: user.name,
         role: user.role,
       },
       process.env.JWT_SECRET || 'your-secret-key-change-in-production',
@@ -51,12 +52,13 @@ export class AuthService {
       user: {
         id: user._id.toString(),
         email: user.email,
+        name: user.name,
         role: user.role,
       },
     };
   }
 
-  async createUser(email: string, password: string, role: string = 'user'): Promise<User> {
+  async createUser(email: string, password: string, name: string = 'Admin', role: string = 'user'): Promise<User> {
     const existingUser = await this.userModel.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       throw new Error('User already exists');
@@ -66,6 +68,7 @@ export class AuthService {
     const user = new this.userModel({
       email: email.toLowerCase(),
       password: hashedPassword,
+      name,
       role,
       active: true,
     });
