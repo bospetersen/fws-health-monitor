@@ -169,7 +169,7 @@ export default function HealthStatusPage() {
 
   return (
     <div class={styles.pageContainer}>
-      <header class={styles.pageHeader} style={{ "display": "grid", "grid-template-columns": "auto 1fr", "gap": "40px", "align-items": "center", "padding": "20px 0" }}>
+      <header class={styles.pageHeader} style={{ "display": "grid", "grid-template-columns": "auto 1fr", "gap": "40px", "align-items": "center", "padding": "0px 0 20px 0" }}>
         {/* Left Column: Title and Subtitle */}
         <div style={{ "text-align": "left" }}>
           <h1 style={{ "margin": "0 0 8px 0", "font-size": "28px" }}>System Health Status</h1>
