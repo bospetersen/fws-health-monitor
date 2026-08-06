@@ -231,20 +231,22 @@ export default function HealthStatusPage() {
       <main class={styles.pageContent}>
         {/* Health Check Controls */}
         <section class={styles.section}>
-          <div class={styles.healthCheckHeader}>
+          <div style={{"float": "left"}}>
             <h2>🔍 System Status</h2>
-            <button
-              onClick={checkEndpointHealth}
-              disabled={isLoading()}
-              class={styles.refreshButton}
-              title="Refresh endpoint status (auto-checks every 5 minutes)"
-            >
-              {isLoading() ? '⟳ Checking...' : '⟳ Refresh Status'}
-            </button>
+            <div style={{"display": "flex", "align-items": "center", "gap": "20px"}}>
+              <button
+                onClick={checkEndpointHealth}
+                disabled={isLoading()}
+                class={styles.refreshButton}
+                title="Refresh endpoint status (auto-checks every 5 minutes)"
+              >
+                {isLoading() ? 'Checking...' : 'Refresh Status'}
+              </button>
+              <p class={styles.statusNote} style={{"font-size": "16px", "margin": "0"}}>
+                {isLoading() ? 'Checking endpoints...' : 'Auto-checks every 5 minutes. Click Refresh to check now.'}
+              </p>
+            </div>
           </div>
-          <p class={styles.statusNote}>
-            {isLoading() ? 'Checking endpoints...' : 'Auto-checks every 5 minutes. Click Refresh to check now.'}
-          </p>
         </section>
 
         {/* Endpoint Groups Sections */}
