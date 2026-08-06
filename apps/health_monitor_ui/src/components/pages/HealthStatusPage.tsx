@@ -178,8 +178,8 @@ export default function HealthStatusPage() {
 
         {/* Right Column: User Info and Buttons */}
         <div style={{ "display": "flex", "flex-direction": "column", "align-items": "flex-end", "gap": "12px" }}>
-          <span style={{ "font-size": "14px", "color": "#666" }}>
-            {auth.user()?.email}
+          <span style={{ "font-size": "18px", "color": "#333" }}>
+            <strong>{auth.user()?.name}</strong> - {auth.user()?.email}
           </span>
           <div style={{ "display": "flex", "gap": "10px" }}>
             <form onsubmit={(e) => {
