@@ -182,28 +182,6 @@ export default function HealthStatusPage() {
             <strong>{auth.user()?.name}</strong> - {auth.user()?.email}
           </span>
           <div style={{ "display": "flex", "gap": "10px" }}>
-            <form onsubmit={(e) => {
-              e.preventDefault();
-              window.location.href = '/system/manage-endpoints';
-            }} style={{ "display": "inline" }}>
-              <button
-                type="submit"
-                style={{
-                  "padding": "8px 16px",
-                  "background-color": "#2196F3",
-                  "color": "white",
-                  "border": "none",
-                  "border-radius": "4px",
-                  "font-size": "14px",
-                  "cursor": "pointer",
-                  "transition": "background-color 0.2s",
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#1976D2")}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#2196F3")}
-              >
-                Manage Endpoints
-              </button>
-            </form>
             <form
               onsubmit={(e) => {
                 e.preventDefault();
@@ -236,8 +214,33 @@ export default function HealthStatusPage() {
       <main class={styles.pageContent}>
         {/* Health Check Controls */}
         <section class={styles.section}>
-          <h2>🔍 System Status</h2>
-          <div style={{"display": "flex", "align-items": "center", "gap": "20px"}}>
+          <div style={{"display": "flex", "justify-content": "space-between", "align-items": "center", "padding-bottom": "8px", "border-bottom": "1px solid #ddd"}}>
+            <h2 style={{"margin": "0", "text-decoration": "none", "border": "none"}}>🔍 System Status</h2>
+            <form onsubmit={(e) => {
+              e.preventDefault();
+              window.location.href = '/system/manage-endpoints';
+            }} style={{ "display": "inline", "margin-top": "-20px" }}>
+              <button
+                type="submit"
+                style={{
+                  "padding": "8px 16px",
+                  "background-color": "#2196F3",
+                  "color": "white",
+                  "border": "none",
+                  "border-radius": "4px",
+                  "font-size": "14px",
+                  "cursor": "pointer",
+                  "transition": "background-color 0.2s",
+                  "margin": "0"
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#1976D2")}
+                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#2196F3")}
+              >
+                Manage Endpoints
+              </button>
+            </form>
+          </div>
+          <div style={{"display": "flex", "align-items": "center", "gap": "20px", "padding-top": "12px", "padding-bottom": "0"}}>
             <button
               onClick={checkEndpointHealth}
               disabled={isLoading()}
