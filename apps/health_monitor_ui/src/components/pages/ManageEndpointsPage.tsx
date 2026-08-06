@@ -38,9 +38,11 @@ export default function ManageEndpointsPage() {
   const [copiedUrl, setCopiedUrl] = createSignal<string | null>(null);
   const [hoveredEndpointId, setHoveredEndpointId] = createSignal<string | null>(null);
   const [draggedEndpointId, setDraggedEndpointId] = createSignal<string | null>(null);
+  const [draggedGroupId, setDraggedGroupId] = createSignal<string | null>(null);
   const [dragOverEndpointId, setDragOverEndpointId] = createSignal<string | null>(null);
   const [dropPosition, setDropPosition] = createSignal<'above' | 'below' | null>(null);
   const [isReordering, setIsReordering] = createSignal(false);
+  const [reorderingGroupId, setReorderingGroupId] = createSignal<string | null>(null);
 
   // New group form
   const [newGroupName, setNewGroupName] = createSignal('');
@@ -318,6 +320,7 @@ export default function ManageEndpointsPage() {
   // Drag and drop handlers
   const handleDragStart = (endpoint: Endpoint, event: DragEvent) => {
     setDraggedEndpointId(endpoint._id);
+    setDraggedGroupId(endpoint.groupId);
     if (event.dataTransfer) {
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/plain', endpoint._id);
@@ -339,7 +342,9 @@ export default function ManageEndpointsPage() {
   const handleDrop = async (dropTargetEndpoint: Endpoint, event: DragEvent) => {
     event.preventDefault();
     const draggedId = draggedEndpointId();
+    const draggedGroupIdValue = draggedGroupId();
     setDraggedEndpointId(null);
+    setDraggedGroupId(null);
     setDragOverEndpointId(null);
 
     if (!draggedId || draggedId === dropTargetEndpoint._id) return;
@@ -348,6 +353,7 @@ export default function ManageEndpointsPage() {
     const draggedEndpoint = endpoints().find((e) => e._id === draggedId);
     if (!draggedEndpoint || draggedEndpoint.groupId !== dropTargetEndpoint.groupId) return;
 
+    setReorderingGroupId(draggedGroupIdValue);
     setIsReordering(true);
 
     // Reorder using existing moveEndpoint logic
@@ -360,6 +366,7 @@ export default function ManageEndpointsPage() {
 
     if (draggedIndex === -1 || targetIndex === -1) {
       setIsReordering(false);
+      setReorderingGroupId(null);
       return;
     }
 
@@ -413,6 +420,7 @@ export default function ManageEndpointsPage() {
         console.error('Reorder failed:', errorText);
         setError(`Failed to reorder: ${response.status}`);
         setIsReordering(false);
+        setReorderingGroupId(null);
         return;
       }
 
@@ -421,10 +429,12 @@ export default function ManageEndpointsPage() {
 
       setEndpoints([...otherEndpoints, ...updatedGroupEndpoints]);
       setIsReordering(false);
+      setReorderingGroupId(null);
     } catch (err) {
       console.error('Reorder error:', err);
       setError(err instanceof Error ? err.message : 'Error reordering endpoints');
       setIsReordering(false);
+      setReorderingGroupId(null);
     }
   };
 
@@ -749,7 +759,7 @@ export default function ManageEndpointsPage() {
 
                     <Show when={groupEndpoints().length > 0} fallback={<p style={{ "color": "#999", "font-size": "14px" }}>No endpoints in this group</p>}>
                       <div class={managementStyles.linksTable} style={{ "position": "relative" }}>
-                        <Show when={isReordering()}>
+                        <Show when={isReordering() && reorderingGroupId() === group._id}>
                           <div class={managementStyles.loadingOverlay}>
                             <div class={managementStyles.spinnerContainer}>
                               <div class={managementStyles.spinner}></div>
@@ -773,15 +783,23 @@ export default function ManageEndpointsPage() {
                                     draggable="true"
                                     onDragStart={(e) => handleDragStart(endpoint, e)}
                                     onDragOver={(e) => {
-                                      handleDragOver(e);
-                                      setDragOverEndpointId(endpoint._id);
-                                      setDropPosition('above');
+                                      e.preventDefault();
+                                      if (draggedGroupId() === endpoint.groupId) {
+                                        if (e.dataTransfer) {
+                                          e.dataTransfer.dropEffect = 'move';
+                                        }
+                                        setDragOverEndpointId(endpoint._id);
+                                        setDropPosition('above');
+                                      } else {
+                                        if (e.dataTransfer) {
+                                          e.dataTransfer.dropEffect = 'none';
+                                        }
+                                      }
                                     }}
                                     onDragLeave={handleDragLeave}
                                     onDrop={(e) => handleDrop(endpoint, e)}
-                                    class={`${hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''} ${draggedEndpointId() === endpoint._id ? managementStyles.rowDragging : ''} ${dragOverEndpointId() === endpoint._id ? managementStyles.rowDragOver : ''} ${dragOverEndpointId() === endpoint._id && dropPosition() === 'above' ? managementStyles.dropAbove : ''}`}
+                                    class={`${hoveredEndpointId() === endpoint._id ? managementStyles.rowHovered : ''} ${draggedEndpointId() === endpoint._id ? managementStyles.rowDragging : ''} ${dragOverEndpointId() === endpoint._id ? managementStyles.rowDragOver : ''} ${dragOverEndpointId() === endpoint._id && dropPosition() === 'above' ? managementStyles.dropAbove : ''} ${draggedEndpointId() && draggedGroupId() !== endpoint.groupId && dragOverEndpointId() === endpoint._id ? managementStyles.dropInvalid : ''}`}
                                     style={{
-                                      "cursor": "grab",
                                       "opacity": draggedEndpointId() === endpoint._id ? "0.5" : "1",
                                       "background-color": dragOverEndpointId() === endpoint._id ? "#e3f2fd" : "transparent",
                                       "transition": "all 0.2s ease",
@@ -853,16 +871,25 @@ export default function ManageEndpointsPage() {
                                     draggable="true"
                                     onDragStart={(e) => handleDragStart(endpoint, e)}
                                     onDragOver={(e) => {
-                                      handleDragOver(e);
-                                      setDragOverEndpointId(endpoint._id);
-                                      setDropPosition('below');
+                                      e.preventDefault();
+                                      if (draggedGroupId() === endpoint.groupId) {
+                                        if (e.dataTransfer) {
+                                          e.dataTransfer.dropEffect = 'move';
+                                        }
+                                        setDragOverEndpointId(endpoint._id);
+                                        setDropPosition('below');
+                                      } else {
+                                        if (e.dataTransfer) {
+                                          e.dataTransfer.dropEffect = 'none';
+                                        }
+                                      }
                                     }}
                                     onDragLeave={handleDragLeave}
                                     onDrop={(e) => handleDrop(endpoint, e)}
-                                    class={`${dragOverEndpointId() === endpoint._id && dropPosition() === 'below' ? managementStyles.dropBelow : ''}`}
+                                    class={`${dragOverEndpointId() === endpoint._id && dropPosition() === 'below' ? managementStyles.dropBelow : ''} ${draggedEndpointId() && draggedGroupId() !== endpoint.groupId && dragOverEndpointId() === endpoint._id ? managementStyles.dropInvalid : ''}`}
                                     style={{
                                       "border-bottom": "1px solid #e8e8e8",
-                                      "cursor": "grab",
+                                      "user-select": "none",
                                       "opacity": draggedEndpointId() === endpoint._id ? "0.5" : "1",
                                       "background-color": dragOverEndpointId() === endpoint._id ? "#e3f2fd" : "transparent",
                                       "transition": "all 0.2s ease",
@@ -874,7 +901,7 @@ export default function ManageEndpointsPage() {
                                     <td>
                                       <a 
                                         class={managementStyles.urlCode}
-                                        style={{"float": "left"}}
+                                        style={{"float": "left", "user-select": "none"}}
                                         href={endpoint.url.startsWith('http') ? endpoint.url : 'http://' + endpoint.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
