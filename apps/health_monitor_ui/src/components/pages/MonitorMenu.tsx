@@ -17,11 +17,12 @@ export const MonitorMenu = (props: MonitorMenuProps): JSX.Element => {
     <div style={{
       "display": "flex",
       "gap": "12px",
-      "padding": "16px",
+      "padding": "10px",
       "border": "1px solid #e0e0e0",
       "border-radius": "4px",
-      "background-color": "#fafafa",
-      "margin-bottom": "20px"
+      "background-color": "#ffffff",
+      "margin-bottom": "20px",
+      "margin-top": "-30px"
     }}>
       {props.links.map((link) => (
         <a
@@ -30,25 +31,22 @@ export const MonitorMenu = (props: MonitorMenuProps): JSX.Element => {
           rel={link.external ? "noopener noreferrer" : undefined}
           style={{
             "text-decoration": "none",
-            "color": "#2196F3",
+            "color": "#999999",
             "font-size": "16px",
-            "font-weight": "500",
+            "font-weight": "normal",
             "cursor": "pointer",
             "transition": "color 0.2s",
             "display": "flex",
             "align-items": "center",
             "gap": "8px",
             "padding": "8px 12px",
-            "border-radius": "4px",
-            "transition": "background-color 0.2s, color 0.2s"
+            "border-radius": "4px"
           }}
           onMouseOver={(e) => {
-            e.currentTarget.style.color = "#1976D2";
-            e.currentTarget.style.backgroundColor = "#e3f2fd";
+            e.currentTarget.style.color = "#000000";
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.color = "#2196F3";
-            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "#999999";
           }}
         >
           <span style={{ "font-size": "18px" }}>{link.icon}</span>
